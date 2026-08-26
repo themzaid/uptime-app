@@ -23,7 +23,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
   - New user can sign up and land on a dashboard
   - Logged-out users are redirected away from protected pages
 
-### Provision Neon Postgres + Drizzle schema
+### [x] Provision Neon Postgres + Drizzle schema
 - **Labels:** infra, database
 - **Estimate:** 3
 - Tables: `monitors`, `checks`, `incidents`.
