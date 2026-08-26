@@ -39,7 +39,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
   - User can add a monitor with a name + URL + check interval
   - List view shows all of a user's monitors
 
-### Create docker-compose.yml for local dev
+### [x] Create docker-compose.yml for local dev
 - **Labels:** infra, docker
 - **Estimate:** 2
 - Postgres + Redis running locally via one command.
@@ -47,7 +47,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
   - `docker-compose up` starts Postgres + Redis
   - App connects to both without manual config changes
 
-### Write local setup README
+### [x] Write local setup README
 - **Labels:** docs
 - **Estimate:** 1
 - **Acceptance criteria:**
@@ -58,7 +58,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
 ## Sprint 2 (Weeks 3–4): Check Engine + Docker
 **Sprint Goal:** The app actually checks whether a site is up, on a schedule.
 
-### Build standalone Node worker for HTTP checks
+### [x] Build standalone Node worker for HTTP checks
 - **Labels:** feature, worker
 - **Estimate:** 5
 - Separate service (not a Vercel function) that performs the actual ping.
