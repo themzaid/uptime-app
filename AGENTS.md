@@ -41,3 +41,6 @@ git push
 1. NEVER automatically run any of these 3 git commands yourself. Only output the text block for the user to copy and run.
 2. NEVER include the iterative "scratchpad" steps taken during sessions since the last commit (e.g., "tried X, then fixed Y"). Focus ONLY on the final outcome of the code changes.
 3. ALWAYS summarize ALL changes made across the entire codebase since the last commit. Do not just focus on the most recently edited file or current chat session.
+
+# General Rules
+- NEVER write, edit, or touch any code files unless explicitly asked to do so by the user. The user will always edit the code manually. Only provide the code or commands for the user to copy/paste.

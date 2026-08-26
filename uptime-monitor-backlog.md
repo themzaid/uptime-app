@@ -31,7 +31,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
   - Schema migrated via Drizzle
   - Tables visible in Neon console with correct relations
 
-### Build CRUD UI for monitors
+### [x] Build CRUD UI for monitors
 - **Labels:** feature
 - **Estimate:** 5
 - Add/edit/delete a URL to watch (no actual checking yet — just data entry).

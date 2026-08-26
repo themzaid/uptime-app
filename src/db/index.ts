@@ -1,12 +1,24 @@
 import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { drizzle as drizzleNeon } from 'drizzle-orm/neon-http';
+import { drizzle as drizzlePostgres } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import * as schema from './schema';
 
-// Grab the connection string we just put in your .env.local file
 const connectionString = process.env.DATABASE_URL!;
 
-// Set up the Neon connection
-const sql = neon(connectionString);
+// Extract the type from the Neon driver so our app has consistent types
+type DbType = ReturnType<typeof drizzleNeon<typeof schema>>;
 
-// Initialize Drizzle ORM and pass it our schema so it knows about the tables
-export const db = drizzle(sql, { schema });
+let db: DbType;
+
+if (process.env.NODE_ENV === 'production') {
+    // Use Neon HTTP driver for Vercel / Edge deployments
+    const sql = neon(connectionString);
+    db = drizzleNeon(sql, { schema }) as unknown as DbType;
+} else {
+    // Use standard TCP Postgres driver for local Docker development
+    const queryClient = postgres(connectionString);
+    db = drizzlePostgres(queryClient, { schema }) as unknown as DbType;
+}
+
+export { db };
