@@ -43,6 +43,6 @@ git push
 3. ALWAYS summarize ALL changes made across the entire codebase since the last commit. Do not just focus on the most recently edited file or current chat session.
 
 # General Rules
-- NEVER write, edit, or touch any code files unless explicitly asked to do so by the user. The user will always edit the code manually. Only provide the code or commands for the user to copy/paste.
+- NEVER write, edit, or touch any code files unless explicitly asked to do so by the user. The user will always edit the code manually. Only provide the code or commands for the user to copy/paste. (EXCEPTION: You are allowed to edit uptime-monitor-backlog.md to check off completed tasks).
 - NEVER run any commands yourself (e.g., via terminal/shell tools). Only tell the user what commands to run so they can execute them manually.
 - ALWAYS provide a git commit message block when the current task or step is finished.

@@ -87,7 +87,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
   - Worker runs as its own container with a Dockerfile
   - Builds successfully with `docker build`
 
-### Add worker to docker-compose, verify end-to-end locally
+### [x] Add worker to docker-compose, verify end-to-end locally
 - **Labels:** infra, docker
 - **Estimate:** 2
 - **Acceptance criteria:**
