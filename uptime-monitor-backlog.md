@@ -80,7 +80,7 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
   - Killing a test endpoint creates an incident record after the threshold
   - Restoring it resolves the incident
 
-### Dockerize the worker service
+### [x] Dockerize the worker service
 - **Labels:** infra, docker
 - **Estimate:** 3
 - **Acceptance criteria:**
