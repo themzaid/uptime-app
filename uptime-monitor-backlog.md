@@ -65,14 +65,14 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
 - **Acceptance criteria:**
   - Worker can hit a URL and record status code + latency
 
-### Set up Redis + BullMQ scheduling
+### [x] Set up Redis + BullMQ scheduling
 - **Labels:** infra, worker
 - **Estimate:** 5
 - Repeatable job per monitor, respecting its configured interval.
 - **Acceptance criteria:**
   - Each monitor gets checked automatically at its set interval without manual triggering
 
-### Implement incident detection rule
+### [x] Implement incident detection rule
 - **Labels:** feature, worker
 - **Estimate:** 3
 - e.g. 3 consecutive failures = incident opened; 1 success = resolved.

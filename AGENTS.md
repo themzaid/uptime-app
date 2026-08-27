@@ -45,3 +45,4 @@ git push
 # General Rules
 - NEVER write, edit, or touch any code files unless explicitly asked to do so by the user. The user will always edit the code manually. Only provide the code or commands for the user to copy/paste.
 - NEVER run any commands yourself (e.g., via terminal/shell tools). Only tell the user what commands to run so they can execute them manually.
+- ALWAYS provide a git commit message block when the current task or step is finished.

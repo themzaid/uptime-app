@@ -1,3 +1,4 @@
+// src/actions/monitors.ts
 'use server';
 
 import { db } from '../db';
@@ -5,6 +6,7 @@ import { monitors } from '../db/schema';
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { eq, and } from 'drizzle-orm';
+import { upsertMonitorJob, removeMonitorJob } from '../worker/queue';
 
 // Server Action to create a new monitor
 export async function createMonitor(formData: FormData) {
@@ -20,15 +22,18 @@ export async function createMonitor(formData: FormData) {
         throw new Error('Missing required fields');
     }
 
-    // 3. Insert the new record into the database
-    await db.insert(monitors).values({
+    // 3. Insert the new record into the database and get its ID back
+    const [newMonitor] = await db.insert(monitors).values({
         userId,
         name,
         url,
         interval,
-    });
+    }).returning();
 
-    // 4. Tell Next.js to refresh the dashboard data
+    // 4. Schedule the job in BullMQ
+    await upsertMonitorJob(newMonitor.id, url, interval);
+
+    // 5. Tell Next.js to refresh the dashboard data
     revalidatePath('/dashboard');
 }
 
@@ -37,8 +42,7 @@ export async function deleteMonitor(id: number) {
     // 1. Ensure the user is logged in
     const { userId } = await auth.protect();
 
-    // 2. Delete the monitor. We use `and()` to make sure we only delete 
-    //    it if the ID matches AND it belongs to the currently logged-in user.
+    // 2. Delete the monitor
     await db.delete(monitors).where(
         and(
             eq(monitors.id, id),
@@ -46,6 +50,9 @@ export async function deleteMonitor(id: number) {
         )
     );
 
-    // 3. Tell Next.js to refresh the dashboard data
+    // 3. Remove the job from the BullMQ schedule
+    await removeMonitorJob(id);
+
+    // 4. Tell Next.js to refresh the dashboard data
     revalidatePath('/dashboard');
 }
