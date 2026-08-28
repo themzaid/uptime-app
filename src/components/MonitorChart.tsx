@@ -23,6 +23,7 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
 
     // Configuration for our time buckets
     const bucketConfig = {
+        hourly: { sizeMs: 1 * 60 * 1000, totalBuckets: 60 }, // 1 min, 1h span
         daily: { sizeMs: 30 * 60 * 1000, totalBuckets: 48 }, // 30 mins, 24h span
         weekly: { sizeMs: 4 * 60 * 60 * 1000, totalBuckets: 42 }, // 4 hours, 7d span
         monthly: { sizeMs: 24 * 60 * 60 * 1000, totalBuckets: 30 }, // 1 day, 30d span
@@ -51,13 +52,18 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
         }
     });
 
-    const timeFormat = view === 'monthly' ? 'MMM d' : 'MMM d, HH:mm';
-    const trackerGapClass = view === 'daily' ? 'gap-[2px]' : view === 'weekly' ? 'gap-[3px]' : 'gap-[4px]';
+    const timeFormat = view === 'monthly' ? 'MMM d' : view === 'hourly' ? 'HH:mm' : 'MMM d, HH:mm';
+    const trackerGapClass = view === 'hourly' ? 'gap-[2px]' : view === 'daily' ? 'gap-[2px]' : view === 'weekly' ? 'gap-[3px]' : view === 'monthly' ? 'gap-[4px]' : 'gap-[4px]';
+
+    const chartDescription = view === 'hourly' ? '(Past 60 mins, 1-min windows)' 
+                           : view === 'daily' ? '(Past 24 hours, 30-min windows)' 
+                           : view === 'weekly' ? '(Past 7 days, 4-hour windows)' 
+                           : '(Past 30 days, 24-hour windows)';
 
     // 1. Compile Data for our Custom Uptime Tracker
     const trackerData = buckets.map((bucket, idx) => {
         const bucketChecks = bucket.checks;
-        let color = 'bg-gray-100'; // 🟢 The beautiful light gray you requested!
+        let color = 'bg-gray-100'; // The beautiful light gray you requested!
         let tooltip = format(new Date(bucket.bucketEnd), timeFormat);
 
         if (bucketChecks.length === 0) {
@@ -103,7 +109,10 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
         <div className="mt-8 flex flex-col gap-8">
             {/* Uptime Tracker */}
             <div>
-                <p className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider">Uptime History</p>
+                <p className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider flex items-center justify-between">
+                    <span>Uptime History</span>
+                    <span className="text-gray-400 normal-case tracking-normal">{chartDescription}</span>
+                </p>
                 {/* Our Custom Tracker with Instant Rich Tooltips */}
                 <div className={`flex items-center ${trackerGapClass} h-8 w-full relative`}>
                     {trackerData.map((block) => (
