@@ -137,7 +137,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - Recharts-based visualization of historical check data.
 
 ### 3. Email alerts via Resend
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** Feature, alerts
 - **Priority:** Medium
 - **Estimate:** 3

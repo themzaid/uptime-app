@@ -1,6 +1,6 @@
 'use client';
 
-import { LineChart } from '@tremor/react';
+import { LineChart, AreaChart } from '@tremor/react';
 import { format } from 'date-fns';
 
 type Check = {
@@ -19,7 +19,7 @@ function formatLatency(value: number | null | undefined) {
 // Now accepts the `view` prop
 export default function MonitorChart({ checks, view = 'daily' }: { checks: Check[], view?: string }) {
     // TREMOR HACK: Tailwind v4 scanner bypass for dynamic colors
-    const tremorSafelist = 'bg-emerald-500 bg-rose-500 bg-amber-500 bg-gray-100 stroke-emerald-500 fill-emerald-500 text-emerald-500 ring-emerald-500';
+    const tremorSafelist = 'bg-emerald-500 bg-rose-500 bg-orange-500 bg-amber-400 bg-gray-100 stroke-emerald-500 fill-emerald-500 text-emerald-500 ring-emerald-500 bg-cyan-500 stroke-cyan-500 fill-cyan-500 text-cyan-500 ring-cyan-500';
 
     // Configuration for our time buckets
     const bucketConfig = {
@@ -71,21 +71,28 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
             return { id: idx, color, tooltip };
         }
 
-        // Aggregate logic: If ANY check failed in this window, mark the whole bucket as failed.
-        const hasErrors = bucketChecks.some(c => c.statusCode && c.statusCode >= 400);
-        const hasTimeouts = bucketChecks.some(c => c.statusCode === null);
+        // 5-Color Logic
+        const totalChecks = bucketChecks.length;
+        const failedChecks = bucketChecks.filter(c => c.statusCode === null || c.statusCode < 200 || c.statusCode >= 300).length;
 
         // Average Latency for the bucket
         const latencies = bucketChecks.filter(c => c.latency !== null).map(c => c.latency as number);
         const avgLatency = latencies.length > 0 ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) : null;
 
-        if (hasTimeouts) {
-            color = 'bg-amber-500';
-            tooltip += ` - Unreachable Timeout`;
-        } else if (hasErrors) {
+        if (failedChecks === totalChecks) {
+            // RED: 100% of checks failed (Sustained Downtime)
             color = 'bg-rose-500';
-            tooltip += ` - Down (HTTP Error)`;
+            tooltip += ` - Down`;
+        } else if (failedChecks > 0) {
+            // ORANGE: Mix of success and failure (Transient/Partial Downtime)
+            color = 'bg-orange-500';
+            tooltip += ` - Partial Downtime (${failedChecks} failures)`;
+        } else if (avgLatency !== null && avgLatency >= 1000) {
+            // YELLOW: 0 failures, but slow latency (Warning/Slowdown)
+            color = 'bg-amber-400';
+            tooltip += ` - Slow (${formatLatency(avgLatency)})`;
         } else {
+            // GREEN: 0 failures, fast latency (Healthy)
             color = 'bg-emerald-500';
             tooltip += ` - Up (${formatLatency(avgLatency)})`;
         }
@@ -135,12 +142,12 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
             {/* Latency Chart */}
             <div>
                 <p className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider">Latency</p>
-                <LineChart
+                <AreaChart
                     className="h-28 w-full"
                     data={lineChartData}
                     index="time"
                     categories={['Latency']}
-                    colors={['emerald']}
+                    colors={['cyan']}
                     valueFormatter={(number) => formatLatency(number)}
                     yAxisWidth={47}
                     showAnimation={true}

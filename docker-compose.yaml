@@ -32,6 +32,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.worker
+    env_file:
+      - .env.local
     environment:
       # Use the docker network hostnames to connect to the databases
       - DATABASE_URL=postgresql://uptime:password@postgres:5432/uptime

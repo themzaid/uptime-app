@@ -72,8 +72,9 @@ export default async function DashboardPage(props: { searchParams: Promise<{ vie
             ) : (
                 <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
                     {userMonitors.map((monitor) => {
-                        const isDown = monitor.incidents.length > 0;
                         const hasChecks = monitor.checks.length > 0;
+                        // It is down if there's an active incident OR if the very latest check failed
+                        const isDown = monitor.incidents.length > 0 || (hasChecks && (monitor.checks[0].statusCode === null || monitor.checks[0].statusCode! < 200 || monitor.checks[0].statusCode! >= 300));
 
                         // Calculate simple uptime from latest checks
                         const upChecks = monitor.checks.filter(c => c.statusCode && c.statusCode >= 200 && c.statusCode < 300).length;

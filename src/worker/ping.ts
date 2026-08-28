@@ -3,7 +3,7 @@
 export interface PingResult {
     isUp: boolean;
     status: number;
-    latency: number; // in milliseconds
+    latency: number | null; // in milliseconds
 }
 
 export async function ping(url: string, timeoutMs: number = 10000): Promise<PingResult> {
@@ -45,7 +45,7 @@ export async function ping(url: string, timeoutMs: number = 10000): Promise<Ping
         return {
             isUp: false,
             status: 0, // 0 indicates a network/DNS error (no response)
-            latency,
+            latency: null, // Hard network failures shouldn't skew latency graphs
         };
     }
 }

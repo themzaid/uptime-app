@@ -3,8 +3,9 @@ import { Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import { ping } from './ping';
 import { db } from '../db';
-import { checks, incidents } from '../db/schema';
+import { checks, incidents, monitors } from '../db/schema';
 import { eq, and, desc } from 'drizzle-orm';
+import { sendIncidentEmail } from './alerts';
 
 const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379', {
     maxRetriesPerRequest: null
@@ -24,33 +25,39 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
         latency: result.latency,
     });
 
+    // We need the monitor details to send alerts
+    const monitorList = await db.select().from(monitors).where(eq(monitors.id, monitorId)).limit(1);
+    const monitor = monitorList[0];
+
+    if (!monitor) return result;
+
     // 2. Incident Detection Logic
     if (result.isUp) {
-        // Site is UP: Resolve any open incidents for this monitor
-        await db.update(incidents)
+        const resolvedIncidents = await db.update(incidents)
             .set({ status: 'resolved', resolvedAt: new Date() })
             .where(
                 and(
                     eq(incidents.monitorId, monitorId),
                     eq(incidents.status, 'open')
                 )
-            );
+            ).returning();
+
+        if (resolvedIncidents.length > 0) {
+            console.log(`✅ INCIDENT RESOLVED for monitor ${monitorId}!`);
+            await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'resolved');
+        }
     } else {
-        // Site is DOWN: Check if we need to open an incident
-        // Let's say 3 consecutive failures = an incident
         const recentChecks = await db.select()
             .from(checks)
             .where(eq(checks.monitorId, monitorId))
             .orderBy(desc(checks.timestamp))
             .limit(3);
 
-        // A check failed if status is 0 (network error) or >= 400 (HTTP error)
         const allFailed = recentChecks.length === 3 && recentChecks.every(
             c => c.statusCode === 0 || (c.statusCode !== null && c.statusCode >= 400)
         );
 
         if (allFailed) {
-            // Check if there's already an open incident
             const existingIncident = await db.select()
                 .from(incidents)
                 .where(
@@ -62,12 +69,12 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
                 .limit(1);
 
             if (existingIncident.length === 0) {
-                // Open a new incident!
                 await db.insert(incidents).values({
                     monitorId,
                     status: 'open',
                 });
                 console.log(`🚨 INCIDENT OPENED for monitor ${monitorId}!`);
+                await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'open');
             }
         }
     }
