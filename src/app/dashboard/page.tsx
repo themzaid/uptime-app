@@ -8,6 +8,7 @@ import DeleteMonitorButton from '../../components/DeleteMonitorButton';
 import AddMonitorForm from '../../components/AddMonitorForm';
 import { ChartLineUp, WarningCircle, CheckCircle } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
+import AutoRefresh from '../../components/AutoRefresh';
 
 export default async function DashboardPage(props: { searchParams: Promise<{ view?: string }> }) {
     const { userId } = await auth();
@@ -40,6 +41,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ vie
 
     return (
         <div className="max-w-6xl mx-auto p-6 md:p-8">
+            <AutoRefresh interval={10000} />
             <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Your Monitors</h1>
                 <div className="flex items-center gap-4">
