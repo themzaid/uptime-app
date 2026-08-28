@@ -99,15 +99,15 @@ How to use this in Linear: create one **Cycle** per sprint below. Each `###` hea
 ## Sprint 3 (Weeks 5–6): Dashboard + Alerts
 **Sprint Goal:** A human can see the data and get notified when something breaks.
 
-### Build live status dashboard
+### [x] Build live status dashboard
 - **Labels:** feature, frontend
 - **Estimate:** 5
 - Per-monitor current status (up/down/degraded).
 
-### Uptime % + latency chart
+### [x] Uptime % + latency chart
 - **Labels:** feature, frontend
 - **Estimate:** 5
-- Recharts-based visualization of historical check data.
+- Recharts/Tremor-based visualization of historical check data.
 
 ### Email alerts via Resend
 - **Labels:** feature, alerts

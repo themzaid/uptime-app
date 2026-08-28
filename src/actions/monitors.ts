@@ -15,11 +15,16 @@ export async function createMonitor(formData: FormData) {
 
     // 2. Extract data from the incoming form submission
     const name = formData.get('name') as string;
-    const url = formData.get('url') as string;
+    let url = formData.get('url') as string;
     const interval = parseInt(formData.get('interval') as string, 10);
 
     if (!name || !url || !interval) {
         throw new Error('Missing required fields');
+    }
+
+    // Auto-prepend https:// if the user didn't type a protocol
+    if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url}`;
     }
 
     // 3. Insert the new record into the database and get its ID back
