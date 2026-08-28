@@ -10,6 +10,16 @@ import { ChartLineUp, WarningCircle, CheckCircle } from '@phosphor-icons/react/d
 import Link from 'next/link';
 import AutoRefresh from '../../components/AutoRefresh';
 
+function getMedian(arr: number[]): number {
+    if (arr.length === 0) return 0;
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    if (sorted.length % 2 === 0) {
+        return Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+    }
+    return sorted[mid];
+}
+
 export default async function DashboardPage(props: { searchParams: Promise<{ view?: string }> }) {
     const { userId } = await auth();
     const searchParams = await props.searchParams;
@@ -69,6 +79,10 @@ export default async function DashboardPage(props: { searchParams: Promise<{ vie
                         const upChecks = monitor.checks.filter(c => c.statusCode && c.statusCode >= 200 && c.statusCode < 300).length;
                         const uptimePct = hasChecks ? Math.round((upChecks / monitor.checks.length) * 100) : 100;
                         const latestLatency = hasChecks ? monitor.checks[0].latency : null;
+                        
+                        // Calculate Median Latency
+                        const latencies = monitor.checks.map(c => c.latency).filter((l): l is number => l !== null);
+                        const medianLatency = latencies.length > 0 ? getMedian(latencies) : null;
 
                         return (
                             <div key={monitor.id} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
@@ -87,10 +101,14 @@ export default async function DashboardPage(props: { searchParams: Promise<{ vie
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div className="grid grid-cols-3 gap-4 mb-4">
                                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                         <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Recent Uptime</p>
                                         <p className="text-2xl font-bold text-gray-900">{hasChecks ? `${uptimePct}%` : '--'}</p>
+                                    </div>
+                                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                        <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Median Latency</p>
+                                        <p className="text-2xl font-bold text-gray-900">{medianLatency ? `${medianLatency}ms` : '--'}</p>
                                     </div>
                                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                         <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Latest Latency</p>
