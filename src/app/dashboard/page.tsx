@@ -7,6 +7,9 @@ import Link from 'next/link';
 import AutoRefresh from '../../components/AutoRefresh';
 import MonitorListClient from '../../components/MonitorListClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function DashboardPage(props: { searchParams: Promise<{ view?: string }> }) {
     const { userId } = await auth();
     const searchParams = await props.searchParams;

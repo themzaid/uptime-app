@@ -30,7 +30,16 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
     };
 
     const config = bucketConfig[view as keyof typeof bucketConfig] || bucketConfig.daily;
-    const now = Date.now();
+    // ANCHOR TIME: Instead of using the client's continuous `Date.now()`, we anchor 
+    // the timeline to the timestamp of the most recent check (if available). 
+    // Why? Because if the client clock ticks to 10:02:15 but the worker hasn't fired 
+    // the 10:02 ping yet, the right-most buckets will artificially show as gray ("No Data").
+    const latestCheckTime = checks.length > 0 
+        ? Math.max(...checks.map(c => new Date(c.timestamp).getTime())) 
+        : Date.now();
+    
+    // Add 1 second to ensure the latest check falls *inside* the bucket boundary (< bucketEnd)
+    const now = latestCheckTime + 1000;
 
     // Create exactly `totalBuckets` buckets, going backwards in time from right now.
     const buckets = Array.from({ length: config.totalBuckets }).map((_, i) => {

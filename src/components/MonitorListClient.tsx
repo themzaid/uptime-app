@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { updateMonitorOrder } from '../actions/monitors';
 import DeleteMonitorButton from './DeleteMonitorButton';
 import MonitorChart from './MonitorChart';
@@ -126,6 +126,10 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
 
 export default function MonitorListClient({ initialMonitors, view }: { initialMonitors: any[], view: string }) {
     const [monitors, setMonitors] = useState(initialMonitors);
+
+    useEffect(() => {
+        setMonitors(initialMonitors);
+    }, [initialMonitors]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
