@@ -40,9 +40,13 @@ git push
 **CRITICAL RULES:**
 1. NEVER automatically run any of these 3 git commands yourself. Only output the text block for the user to copy and run.
 2. NEVER include the iterative "scratchpad" steps taken during sessions since the last commit (e.g., "tried X, then fixed Y"). Focus ONLY on the final outcome of the code changes.
-3. ALWAYS summarize ALL changes made across the entire codebase since the last commit. Do not just focus on the most recently edited file or current chat session.
+3. ALWAYS summarize ALL changes made across the entire codebase since the last commit. Do not just focus on the most recently edited file or current chat session. ALWAYS include the primary task completed in the commit message description. If anything was done beyond the main task (e.g., refactoring, extra file changes), mention those secondary changes separately in the commit message body, but keep the main task at the top in the subject line.
 
 # General Rules
-- NEVER write, edit, or touch any code files unless explicitly asked to do so by the user. The user will always edit the code manually. Only provide the code or commands for the user to copy/paste. (EXCEPTION: You are allowed to edit uptime-monitor-backlog.md to check off completed tasks).
+- ALWAYS use `pnpm` as the package manager for this project. NEVER suggest or use `npm` or `npx`. Use `pnpm dlx` or `pnpm exec` instead of `npx`.
+- NEVER add new files or folders on your own.
+- NEVER edit empty files automatically.
+- You MAY automatically edit files that are already present and have code in them. For all other code changes (like creating new files), provide the code for the user to copy/paste.
+- BACKLOG RULE: You are allowed to edit `uptime-monitor-backlog.md` to check off completed tasks, BUT ONLY do so when the user explicitly asks for a commit message or confirms the task is completely finished. Never check it off prematurely.
 - NEVER run any commands yourself (e.g., via terminal/shell tools). Only tell the user what commands to run so they can execute them manually.
 - ALWAYS provide a git commit message block when the current task or step is finished.

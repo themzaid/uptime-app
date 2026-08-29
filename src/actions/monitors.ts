@@ -61,3 +61,22 @@ export async function deleteMonitor(id: number) {
     // 4. Tell Next.js to refresh the dashboard data
     revalidatePath('/dashboard');
 }
+
+// Server Action to update the order of monitors
+export async function updateMonitorOrder(orderedIds: number[]) {
+    const { userId } = await auth.protect();
+
+    // Update each monitor's orderIndex
+    for (let i = 0; i < orderedIds.length; i++) {
+        await db.update(monitors)
+            .set({ orderIndex: i })
+            .where(
+                and(
+                    eq(monitors.id, orderedIds[i]),
+                    eq(monitors.userId, userId)
+                )
+            );
+    }
+    revalidatePath('/dashboard');
+}
+

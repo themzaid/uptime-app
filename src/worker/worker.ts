@@ -5,7 +5,7 @@ import { ping } from './ping';
 import { db } from '../db';
 import { checks, incidents, monitors } from '../db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { sendIncidentEmail } from './alerts';
+import { sendIncidentEmail, sendSlackAlert } from './alerts';
 
 const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379', {
     maxRetriesPerRequest: null
@@ -45,6 +45,7 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
         if (resolvedIncidents.length > 0) {
             console.log(`✅ INCIDENT RESOLVED for monitor ${monitorId}!`);
             await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'resolved');
+            await sendSlackAlert(monitor.name, monitor.url, 'resolved');
         }
     } else {
         const recentChecks = await db.select()
@@ -75,6 +76,7 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
                 });
                 console.log(`🚨 INCIDENT OPENED for monitor ${monitorId}!`);
                 await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'open');
+                await sendSlackAlert(monitor.name, monitor.url, 'open');
             }
         }
     }

@@ -44,3 +44,32 @@ export async function sendIncidentEmail(userId: string, monitorName: string, mon
         console.error('Failed to send incident email:', error);
     }
 }
+
+export async function sendSlackAlert(monitorName: string, monitorUrl: string, status: 'open' | 'resolved') {
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!webhookUrl) {
+        console.warn('SLACK_WEBHOOK_URL is not set, skipping Slack alert.');
+        return;
+    }
+    
+    const isDown = status === 'open';
+    const text = isDown 
+        ? `🚨 *Monitor Down:* ${monitorName}\nURL: ${monitorUrl}` 
+        : `✅ *Monitor Up:* ${monitorName}\nURL: ${monitorUrl}`;
+
+    try {
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+        });
+        
+        if (!response.ok) {
+            console.error(`Failed to send Slack alert for ${monitorName}: ${response.statusText}`);
+        } else {
+            console.log(`Slack alert sent for monitor ${monitorName} (${status})`);
+        }
+    } catch (error) {
+        console.error('Error sending Slack alert:', error);
+    }
+}

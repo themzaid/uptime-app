@@ -9,6 +9,7 @@ export const monitors = pgTable('monitors', {
     name: varchar('name', { length: 255 }).notNull(),
     url: text('url').notNull(),
     interval: integer('interval').notNull().default(5), // How often to check (in minutes)
+    orderIndex: integer('order_index').notNull().default(0), // For dashboard rearrangement
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

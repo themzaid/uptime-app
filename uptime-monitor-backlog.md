@@ -143,8 +143,8 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 3
 - Fires on incident open and resolve.
 
-### 4. Webhook alerts (Slack/Discord)
-- **Status:** ⬜ Not started
+### 4. Webhook alerts for Slack
+- **Status:** ✅ Done
 - **Labels:** Feature, alerts
 - **Priority:** Medium
 - **Estimate:** 3
