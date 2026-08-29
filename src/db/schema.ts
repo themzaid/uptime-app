@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, timestamp, varchar, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // 1. Monitors Table
@@ -34,10 +34,22 @@ export const incidents = pgTable('incidents', {
         .notNull()
         .references(() => monitors.id, { onDelete: 'cascade' }),
     status: varchar('status', { length: 50 }).notNull().default('open'), // 'open' or 'resolved'
+    alertSent: boolean('alert_sent').notNull().default(false), // Did we actually send an alert for this? (for throttling)
     openedAt: timestamp('opened_at').defaultNow().notNull(),
     resolvedAt: timestamp('resolved_at'),
 });
 
+
+// 4. User Settings Table
+// Stores global user preferences like alert cooldown and notification switches
+export const userSettings = pgTable('user_settings', {
+    userId: varchar('user_id', { length: 255 }).primaryKey(), // Clerk User ID
+    alertCooldown: integer('alert_cooldown').notNull().default(15), // in minutes
+    emailAlertsEnabled: boolean('email_alerts_enabled').notNull().default(true),
+    slackAlertsEnabled: boolean('slack_alerts_enabled').notNull().default(true),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
 
 // --- RELATIONS ---
 // These help Drizzle understand how our tables are connected

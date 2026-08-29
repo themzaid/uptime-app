@@ -91,15 +91,15 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
             <div className="grid grid-cols-3 gap-4 mb-4">
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                     <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Recent Uptime</p>
-                    <p className="text-2xl font-bold text-gray-900">{hasChecks ? `${uptimePct}%` : '--'}</p>
+                    <p className="text-2xl font-bold font-mono text-gray-900">{hasChecks ? `${uptimePct}%` : '--'}</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                     <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Median Latency</p>
-                    <p className="text-2xl font-bold text-gray-900">{medianLatency ? `${medianLatency}ms` : '--'}</p>
+                    <p className="text-2xl font-bold font-mono text-gray-900">{medianLatency ? `${medianLatency}ms` : '--'}</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                     <p className="text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Latest Latency</p>
-                    <p className="text-2xl font-bold text-gray-900">{latestLatency ? `${latestLatency}ms` : '--'}</p>
+                    <p className="text-2xl font-bold font-mono text-gray-900">{latestLatency ? `${latestLatency}ms` : '--'}</p>
                 </div>
             </div>
 
@@ -166,6 +166,7 @@ export default function MonitorListClient({ initialMonitors, view }: { initialMo
 
     return (
         <DndContext
+            id="dnd-monitor-context"
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}

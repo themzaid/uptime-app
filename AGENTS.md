@@ -41,6 +41,8 @@ git push
 1. NEVER automatically run any of these 3 git commands yourself. Only output the text block for the user to copy and run.
 2. NEVER include the iterative "scratchpad" steps taken during sessions since the last commit (e.g., "tried X, then fixed Y"). Focus ONLY on the final outcome of the code changes.
 3. ALWAYS summarize ALL changes made across the entire codebase since the last commit. Do not just focus on the most recently edited file or current chat session. ALWAYS include the primary task completed in the commit message description. If anything was done beyond the main task (e.g., refactoring, extra file changes), mention those secondary changes separately in the commit message body, but keep the main task at the top in the subject line.
+4. ONLY include changes that are ACTUALLY present in the final working tree. Do not track intermediate attempts or changes that were later rejected or reverted by the user.
+5. KEEP COMMIT MESSAGES BRIEF AND CONCEPTUAL. NEVER include actual code snippets, CSS classes, or terminal output in the commit message body. Focus on *what* changed and *why*, not the raw code.
 
 # General Rules
 - ALWAYS use `pnpm` as the package manager for this project. NEVER suggest or use `npm` or `npx`. Use `pnpm dlx` or `pnpm exec` instead of `npx`.

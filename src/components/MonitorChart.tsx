@@ -52,13 +52,14 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
         }
     });
 
-    const timeFormat = view === 'monthly' ? 'MMM d' : view === 'hourly' ? 'HH:mm' : 'MMM d, HH:mm';
+    // Keep the labels very short to prevent X-axis overlap
+    const timeFormat = view === 'monthly' ? 'MMM d' : view === 'weekly' ? 'MMM d' : 'HH:mm';
     const trackerGapClass = view === 'hourly' ? 'gap-[2px]' : view === 'daily' ? 'gap-[2px]' : view === 'weekly' ? 'gap-[3px]' : view === 'monthly' ? 'gap-[4px]' : 'gap-[4px]';
 
-    const chartDescription = view === 'hourly' ? '(Past 60 mins, 1-min windows)' 
-                           : view === 'daily' ? '(Past 24 hours, 30-min windows)' 
-                           : view === 'weekly' ? '(Past 7 days, 4-hour windows)' 
-                           : '(Past 30 days, 24-hour windows)';
+    const chartDescription = view === 'hourly' ? '(Past 60 mins, 1-min windows)'
+        : view === 'daily' ? '(Past 24 hours, 30-min windows)'
+            : view === 'weekly' ? '(Past 7 days, 4-hour windows)'
+                : '(Past 30 days, 24-hour windows)';
 
     // 1. Compile Data for our Custom Uptime Tracker
     const trackerData = buckets.map((bucket, idx) => {
@@ -100,7 +101,8 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
         return { id: idx, color, tooltip };
     });
 
-    // 2. Compile Data for the Latency Line Chart
+    // 2. Compile Data for the Latency Chart
+    const fullTimeFormat = 'MMM d, yyyy HH:mm';
     const lineChartData = buckets.map(bucket => {
         const bucketChecks = bucket.checks;
         const latencies = bucketChecks.filter(c => c.latency !== null).map(c => c.latency as number);
@@ -108,9 +110,26 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
 
         return {
             time: format(new Date(bucket.bucketEnd), timeFormat),
+            fullTime: format(new Date(bucket.bucketEnd), fullTimeFormat),
             Latency: avgLatency,
         };
     });
+
+    const CustomTooltip = ({ payload, active }: any) => {
+        if (!active || !payload || payload.length === 0) return null;
+        return (
+            <div className="bg-gray-900 text-white text-xs font-mono px-3 py-2 rounded-md shadow-lg border border-gray-800">
+                <div className="mb-2 text-gray-400 font-semibold">{payload[0].payload.fullTime}</div>
+                <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
+                        Latency
+                    </span>
+                    <span className="font-bold">{formatLatency(payload[0].value)}</span>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="mt-8 flex flex-col gap-8">
@@ -128,7 +147,7 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
                             className={`w-full h-full rounded-[1px] first:rounded-l-[3px] last:rounded-r-[3px] transition-colors hover:opacity-80 cursor-pointer group relative ${block.color}`}
                         >
                             {/* Instant Popover Tooltip */}
-                            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-50 whitespace-nowrap bg-gray-900 text-white text-xs px-2.5 py-1.5 rounded-md shadow-lg pointer-events-none">
+                            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-50 whitespace-nowrap bg-gray-900 text-white text-xs font-mono px-2.5 py-1.5 rounded-md shadow-lg pointer-events-none">
                                 {block.tooltip}
                                 {/* Little downward arrow for the tooltip */}
                                 <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
@@ -140,18 +159,19 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
 
 
             {/* Latency Chart */}
-            <div>
-                <p className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider">Latency</p>
+            <div className="font-mono">
+                <p className="text-xs text-gray-400 font-sans font-medium mb-3 uppercase tracking-wider">Latency</p>
                 <AreaChart
-                    className="h-28 w-full"
+                    className="h-28 w-full [&_text]:!text-[11px] font-semibold tracking-wide"
                     data={lineChartData}
                     index="time"
                     categories={['Latency']}
                     colors={['cyan']}
                     valueFormatter={(number) => formatLatency(number)}
-                    yAxisWidth={47}
+                    yAxisWidth={45}
                     showAnimation={true}
                     showLegend={false}
+                    customTooltip={CustomTooltip}
                 />
             </div>
         </div>
