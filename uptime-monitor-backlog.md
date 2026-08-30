@@ -157,7 +157,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - Prevents one flapping monitor from spamming notifications.
 
 ### 6. Public read-only status page
-- **Status:** ⬜ Not started
+- **Status:** ⏭️ Skipped
 - **Labels:** Feature, frontend
 - **Priority:** Low
 - **Estimate:** 5
@@ -169,7 +169,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 **Sprint Goal:** The app proves itself automatically, without manual clicking.
 
 ### 1. Vitest unit tests — check logic and incident rules
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** test
 - **Priority:** Urgent
 - **Estimate:** 3

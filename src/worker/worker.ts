@@ -2,6 +2,7 @@
 import { Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import { ping } from './ping';
+import { shouldResolveIncident, shouldOpenIncident, shouldSendAlert } from './incident-logic';
 import { db } from '../db';
 import { checks, incidents, monitors, userSettings } from '../db/schema';
 import { eq, and, desc } from 'drizzle-orm';
@@ -32,85 +33,62 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
     if (!monitor) return result;
 
     // 2. Incident Detection Logic
-    if (result.isUp) {
-        const openIncidents = await db.select().from(incidents).where(
-            and(
-                eq(incidents.monitorId, monitorId),
-                eq(incidents.status, 'open')
-            )
-        ).limit(1);
+    const openIncidents = await db.select().from(incidents).where(
+        and(
+            eq(incidents.monitorId, monitorId),
+            eq(incidents.status, 'open')
+        )
+    ).limit(1);
+    const existingOpenIncident = openIncidents.length > 0 ? openIncidents[0] : null;
 
-        if (openIncidents.length > 0) {
-            const incident = openIncidents[0];
-            await db.update(incidents)
-                .set({ status: 'resolved', resolvedAt: new Date() })
-                .where(eq(incidents.id, incident.id));
+    if (shouldResolveIncident(result.isUp, !!existingOpenIncident) && existingOpenIncident) {
+        await db.update(incidents)
+            .set({ status: 'resolved', resolvedAt: new Date() })
+            .where(eq(incidents.id, existingOpenIncident.id));
 
-            console.log(`✅ INCIDENT RESOLVED for monitor ${monitorId}!`);
+        console.log(`✅ INCIDENT RESOLVED for monitor ${monitorId}!`);
+        
+        if (existingOpenIncident.alertSent) {
+            const settingsList = await db.select().from(userSettings).where(eq(userSettings.userId, monitor.userId)).limit(1);
+            const settings = settingsList[0] || { alertCooldown: 15, emailAlertsEnabled: true, slackAlertsEnabled: true };
             
-            if (incident.alertSent) {
-                const settingsList = await db.select().from(userSettings).where(eq(userSettings.userId, monitor.userId)).limit(1);
-                const settings = settingsList[0] || { alertCooldown: 15, emailAlertsEnabled: true, slackAlertsEnabled: true };
-                
-                if (settings.emailAlertsEnabled) await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'resolved');
-                if (settings.slackAlertsEnabled) await sendSlackAlert(monitor.name, monitor.url, 'resolved');
-            }
+            if (settings.emailAlertsEnabled) await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'resolved');
+            if (settings.slackAlertsEnabled) await sendSlackAlert(monitor.name, monitor.url, 'resolved');
         }
-    } else {
+    } else if (!result.isUp) {
         const recentChecks = await db.select()
             .from(checks)
             .where(eq(checks.monitorId, monitorId))
             .orderBy(desc(checks.timestamp))
             .limit(3);
 
-        const allFailed = recentChecks.length === 3 && recentChecks.every(
-            c => c.statusCode === 0 || (c.statusCode !== null && c.statusCode >= 400)
-        );
-
-        if (allFailed) {
-            const existingIncident = await db.select()
+        if (shouldOpenIncident(recentChecks, !!existingOpenIncident)) {
+            const settingsList = await db.select().from(userSettings).where(eq(userSettings.userId, monitor.userId)).limit(1);
+            const settings = settingsList[0] || { alertCooldown: 15, emailAlertsEnabled: true, slackAlertsEnabled: true };
+            
+            const lastIncidentList = await db.select()
                 .from(incidents)
-                .where(
-                    and(
-                        eq(incidents.monitorId, monitorId),
-                        eq(incidents.status, 'open')
-                    )
-                )
+                .where(eq(incidents.monitorId, monitorId))
+                .orderBy(desc(incidents.openedAt))
                 .limit(1);
+            
+            const lastIncident = lastIncidentList[0];
+            const sendAlert = shouldSendAlert(lastIncident, settings.alertCooldown);
+            
+            if (!sendAlert) {
+                console.log(`⏳ THROTTLING: Skipping alert for monitor ${monitorId} (cooldown: ${settings.alertCooldown}m)`);
+            }
 
-            if (existingIncident.length === 0) {
-                // Fetch user settings and the most recent incident to check cooldown
-                const settingsList = await db.select().from(userSettings).where(eq(userSettings.userId, monitor.userId)).limit(1);
-                const settings = settingsList[0] || { alertCooldown: 15, emailAlertsEnabled: true, slackAlertsEnabled: true };
-                
-                const lastIncidentList = await db.select()
-                    .from(incidents)
-                    .where(eq(incidents.monitorId, monitorId))
-                    .orderBy(desc(incidents.openedAt))
-                    .limit(1);
-                
-                const lastIncident = lastIncidentList[0];
-                let shouldSendAlert = true;
-                
-                if (lastIncident && lastIncident.alertSent) {
-                    const minutesSinceLastAlert = (Date.now() - new Date(lastIncident.openedAt).getTime()) / (1000 * 60);
-                    if (minutesSinceLastAlert < settings.alertCooldown) {
-                        shouldSendAlert = false;
-                        console.log(`⏳ THROTTLING: Skipping alert for monitor ${monitorId} (cooldown: ${settings.alertCooldown}m)`);
-                    }
-                }
-
-                await db.insert(incidents).values({
-                    monitorId,
-                    status: 'open',
-                    alertSent: shouldSendAlert,
-                });
-                console.log(`🚨 INCIDENT OPENED for monitor ${monitorId}!`);
-                
-                if (shouldSendAlert) {
-                    if (settings.emailAlertsEnabled) await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'open');
-                    if (settings.slackAlertsEnabled) await sendSlackAlert(monitor.name, monitor.url, 'open');
-                }
+            await db.insert(incidents).values({
+                monitorId,
+                status: 'open',
+                alertSent: sendAlert,
+            });
+            console.log(`🚨 INCIDENT OPENED for monitor ${monitorId}!`);
+            
+            if (sendAlert) {
+                if (settings.emailAlertsEnabled) await sendIncidentEmail(monitor.userId, monitor.name, monitor.url, 'open');
+                if (settings.slackAlertsEnabled) await sendSlackAlert(monitor.name, monitor.url, 'open');
             }
         }
     }
