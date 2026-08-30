@@ -26,3 +26,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+@layer base {
+  button, 
+  [role="button"],
+  select {
+    cursor: pointer;
+  }
+}

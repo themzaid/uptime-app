@@ -23,7 +23,9 @@ When asked to generate a git commit message, ALWAYS use the following exact form
 
 ```bash
 git add .
-git commit -m "type: description"
+git commit -m "type: [Task Name] description" -m "- First change
+- Second change
+- Third change"
 git push
 ```
 
@@ -38,11 +40,12 @@ git push
 - `chore`: Maintenance tasks (build, dependencies, etc)
 
 **CRITICAL RULES:**
-1. NEVER automatically run any of these 3 git commands yourself. Only output the text block for the user to copy and run.
-2. NEVER include the iterative "scratchpad" steps taken during sessions since the last commit (e.g., "tried X, then fixed Y"). Focus ONLY on the final outcome of the code changes.
-3. ALWAYS summarize ALL changes made across the entire codebase since the last commit. Do not just focus on the most recently edited file or current chat session. ALWAYS include the primary task completed in the commit message description. If anything was done beyond the main task (e.g., refactoring, extra file changes), mention those secondary changes separately in the commit message body, but keep the main task at the top in the subject line.
-4. ONLY include changes that are ACTUALLY present in the final working tree. Do not track intermediate attempts or changes that were later rejected or reverted by the user.
-5. KEEP COMMIT MESSAGES BRIEF AND CONCEPTUAL. NEVER include actual code snippets, CSS classes, or terminal output in the commit message body. Focus on *what* changed and *why*, not the raw code.
+1. **Never run commands:** NEVER automatically run any of these 3 git commands yourself. Only output the text block for the user to copy and run.
+2. **Include Task Name:** ALWAYS include the primary task completed in the commit message description/subject line.
+3. **Format Body as Bullets:** ALWAYS format the commit body as a bulleted list using dashes (`- `). NEVER combine everything into a single paragraph. Each major change gets its own bullet point.
+4. **No Code Snippets:** KEEP COMMIT MESSAGES BRIEF AND CONCEPTUAL. NEVER include actual code snippets, CSS classes, or terminal output in the commit message body. Focus on *what* changed and *why*, not the raw code.
+5. **Final Changes Only:** ONLY include changes that are ACTUALLY present in the final working tree. Do not track intermediate attempts or scratchpad steps (e.g., "tried X, then fixed Y").
+6. **Summarize Everything:** ALWAYS summarize ALL changes made across the entire codebase since the last commit, not just the most recent file.
 
 # General Rules
 - ALWAYS use `pnpm` as the package manager for this project. NEVER suggest or use `npm` or `npx`. Use `pnpm dlx` or `pnpm exec` instead of `npx`.

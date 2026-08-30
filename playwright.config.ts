@@ -6,7 +6,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+dotenv.config({ path: path.resolve(__dirname, '.env.local') }); // Get Clerk/DB keys
+dotenv.config({ path: path.resolve(__dirname, '.env.e2e') });   // Get E2E user keys
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -36,13 +37,17 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+      },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { 
+    //     ...devices['Desktop Firefox'],
+    //   },
+    // },
     // {
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },

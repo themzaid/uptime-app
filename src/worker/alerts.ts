@@ -30,7 +30,7 @@ export async function sendIncidentEmail(userId: string, monitorName: string, mon
 
         const { error } = await resend.emails.send({
             from: 'Uptime Monitor <onboarding@resend.dev>',
-            to: 'themzaid@gmail.com', // TODO: Remove hardcode after testing
+            to: 'mohammed.zaid03@gmail.com', // TODO: Remove hardcode after testing
             subject,
             text,
         });
@@ -38,7 +38,7 @@ export async function sendIncidentEmail(userId: string, monitorName: string, mon
         if (error) {
             console.error('[Resend Error]:', error);
         } else {
-            console.log(`Email alert sent to themzaid@gmail.com (Hardcoded) for monitor ${monitorName} (${status})`);
+            console.log(`Email alert sent to mohammed.zaid03@gmail.com (Hardcoded) for monitor ${monitorName} (${status})`);
         }
     } catch (error) {
         console.error('Failed to send incident email:', error);

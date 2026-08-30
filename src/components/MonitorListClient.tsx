@@ -33,6 +33,32 @@ function getMedian(arr: number[]): number {
     return sorted[mid];
 }
 
+function formatTimeAgo(dateInput: string | Date | null): string {
+    if (!dateInput) return '';
+    const date = new Date(dateInput);
+    const diffMs = Date.now() - date.getTime();
+
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+
+    if (diffSecs < 60) {
+        return `added ${diffSecs}s ago`;
+    } else if (diffMins === 1) {
+        return `added a minute ago`;
+    } else if (diffMins < 60) {
+        return `added ${diffMins} mins ago`;
+    } else if (diffHours === 1) {
+        return `added an hour ago`;
+    } else if (diffHours < 24) {
+        return `added ${diffHours}hrs ago`;
+    } else if (diffHours < 48) {
+        return `added yesterday`;
+    } else {
+        return `added ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    }
+}
+
 function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) {
     const {
         attributes,
@@ -74,7 +100,7 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
             </div>
 
             <div className="flex justify-between items-start mb-6 pr-8">
-                <div>
+                <div className="w-full">
                     <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-semibold text-xl text-gray-900">{monitor.name}</h3>
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${isDown ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
@@ -82,9 +108,16 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
                             {isDown ? 'Down' : 'Up'}
                         </span>
                     </div>
-                    <p className="text-gray-500 text-sm truncate" title={monitor.url}>
-                        {monitor.url}
-                    </p>
+                    <div className="flex items-center justify-between w-full">
+                        <p className="text-gray-500 text-sm truncate" title={monitor.url}>
+                            {monitor.url}
+                        </p>
+                        {monitor.createdAt && (
+                            <span className="text-gray-500 text-xs whitespace-nowrap pl-4">
+                                {formatTimeAgo(monitor.createdAt)}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
 

@@ -88,16 +88,16 @@ export default function AddMonitorForm() {
                                 <button
                                     type="button"
                                     onClick={() => setIsOpen(false)}
-                                    className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+                                    className="px-5 py-2 bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-colors shadow-sm text-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isPending}
-                                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-5 rounded-lg transition-colors shadow-sm text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isPending ? 'Adding...' : 'Add Monitor'}
+                                    {isPending ? 'Creating...' : 'Create Monitor'}
                                 </button>
                             </div>
                         </form>

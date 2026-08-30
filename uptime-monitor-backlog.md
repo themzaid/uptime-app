@@ -188,7 +188,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - This is the "framework ownership" ticket — structure, not just scripts.
 
 ### 4. E2E: login → create monitor → simulate downtime → verify alert
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** test
 - **Priority:** Medium
 - **Estimate:** 5
