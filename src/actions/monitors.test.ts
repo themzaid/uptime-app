@@ -9,6 +9,7 @@ import { upsertMonitorJob, removeMonitorJob } from '../worker/queue';
 vi.mock('next/cache', () => ({
     revalidatePath: vi.fn(),
 }));
+vi.mock('server-only', () => ({}));
 
 // Mock Clerk auth
 vi.mock('@clerk/nextjs/server', () => ({

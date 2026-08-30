@@ -7,6 +7,7 @@ import { eq } from 'drizzle-orm';
 vi.mock('next/cache', () => ({
     revalidatePath: vi.fn(),
 }));
+vi.mock('server-only', () => ({}));
 
 vi.mock('@clerk/nextjs/server', () => ({
     auth: {

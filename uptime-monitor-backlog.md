@@ -181,7 +181,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 3
 
 ### 3. Playwright framework setup (fixtures, page objects, config)
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** test, framework
 - **Priority:** Medium
 - **Estimate:** 5
