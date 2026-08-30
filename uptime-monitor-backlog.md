@@ -175,7 +175,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 3
 
 ### 2. API/integration tests for CRUD + alert-trigger endpoints
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** test
 - **Priority:** High
 - **Estimate:** 3
