@@ -194,13 +194,13 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 5
 
 ### 5. E2E: public status page renders correct state
-- **Status:** ⬜ Not started
+- **Status:** ⏭️ Skipped
 - **Labels:** test
 - **Priority:** Medium
 - **Estimate:** 2
 
 ### 6. Document how to run the full test suite locally
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** docs, test
 - **Priority:** Low
 - **Estimate:** 1

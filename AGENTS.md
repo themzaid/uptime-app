@@ -23,7 +23,8 @@ When asked to generate a git commit message, ALWAYS use the following exact form
 
 ```bash
 git add .
-git commit -m "type: [Task Name] description" -m "- First change
+git commit -m "type: [Task Name] description"
+- First change
 - Second change
 - Third change"
 git push
