@@ -142,8 +142,8 @@ async function syncQueue() {
         }
 
         // 2. Remove jobs for monitors that were deleted from the database
-        const jobs = await monitorQueue.getJobSchedulers();
-        for (const job of jobs) {
+        const refreshedJobs = await monitorQueue.getJobSchedulers();
+        for (const job of refreshedJobs) {
             if (!job.id) continue;
             const idStr = job.id.replace('monitor-', '');
             if (!monitorMap.has(Number(idStr))) {

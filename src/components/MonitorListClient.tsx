@@ -105,8 +105,17 @@ function EditMonitorModal({ monitor, onClose }: { monitor: any /* eslint-disable
                         <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 text-sm" value={url} onChange={e => setUrl(e.target.value)} />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Check Interval (Minutes)</label>
-                        <input type="number" min="1" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 text-sm" value={interval} onChange={e => setInterval(parseInt(e.target.value) || 1)} />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Check Interval</label>
+                        <select
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 bg-white text-sm"
+                            value={interval}
+                            onChange={e => setInterval(parseInt(e.target.value))}
+                        >
+                            <option value={5}>5 mins</option>
+                            <option value={15}>15 mins</option>
+                            <option value={30}>30 mins</option>
+                            <option value={60}>1 hr</option>
+                        </select>
                     </div>
                 </div>
 
@@ -203,7 +212,7 @@ function SortableMonitorCard({ monitor, view }: { monitor: any /* eslint-disable
             </div>
 
             {hasChecks ? (
-                <MonitorChart checks={monitor.checks} view={view} />
+                <MonitorChart checks={monitor.checks} view={view} interval={monitor.interval} />
             ) : (
                 <div className="h-48 w-full mt-4 flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-gray-100 border-dashed text-gray-400">
                     <ChartLineUp className="w-8 h-8 mb-2 opacity-30" />

@@ -60,7 +60,7 @@ export default function AddMonitorForm() {
 
                                 <div>
                                     <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
-                                        URL to Check
+                                        Monitor URL
                                     </label>
                                     <input
                                         type="text"
@@ -79,12 +79,13 @@ export default function AddMonitorForm() {
                                     <select
                                         name="interval"
                                         id="interval"
+                                        defaultValue="5"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 bg-white text-sm"
                                     >
-                                        <option value="1">1 min</option>
                                         <option value="5">5 mins</option>
                                         <option value="15">15 mins</option>
                                         <option value="30">30 mins</option>
+                                        <option value="60">1 hr</option>
                                     </select>
                                 </div>
                             </div>
