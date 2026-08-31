@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <SidebarNav />
 
                 <div className="p-4 mb-4 mx-4 border border-gray-100 bg-gray-50/50 rounded-2xl flex items-center gap-3 transition-colors hover:bg-gray-50">
-                    <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-9 h-9 shadow-sm" } }} />
+                    <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9 shadow-sm" } }} />
                     <div className="flex flex-col">
                         <span className="text-[13px] font-semibold text-gray-900 leading-tight">My Account</span>
                         <span className="text-[11px] text-gray-500 font-medium">Manage profile</span>
