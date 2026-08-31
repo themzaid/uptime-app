@@ -211,38 +211,38 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 **Sprint Goal:** Pushing code is the only manual step left.
 
 ### 1. GitHub Actions: lint + typecheck on every PR
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** devops, ci
 - **Priority:** Urgent
 - **Estimate:** 2
 
 ### 2. GitHub Actions: run Vitest + Playwright suite on PR
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** devops, ci
 - **Priority:** High
 - **Estimate:** 5
 - Runs against a docker-compose'd test environment in CI.
 
 ### 3. Build & push worker Docker image to GHCR on merge to main
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** devops, docker
 - **Priority:** Medium
 - **Estimate:** 3
 
 ### 4. Configure Vercel auto-deploy for dashboard
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** devops
 - **Priority:** Medium
 - **Estimate:** 2
 
 ### 5. Configure Fly.io/Railway auto-deploy for worker image
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** devops, docker
 - **Priority:** Medium
 - **Estimate:** 3
 
 ### 6. Add pipeline status badge + docs to README
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** docs
 - **Priority:** Low
 - **Estimate:** 1

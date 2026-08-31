@@ -1,0 +1,15 @@
+# fly.toml app configuration file generated for uptime-worker-buoyant-haze-7630 on 2026-08-30T15:41:49+05:30
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'uptime-worker-buoyant-haze-7630'
+primary_region = 'iad'
+
+[build]
+  dockerfile = 'Dockerfile.worker'
+
+[[vm]]
+  memory = '256mb'
+  cpus = 1
+  memory_mb = 256

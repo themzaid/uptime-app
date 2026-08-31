@@ -13,10 +13,10 @@ const config: Config = {
             colors: {
                 tremor: {
                     brand: {
-                        faint: colors.blue[50],
-                        muted: colors.blue[200],
-                        DEFAULT: colors.blue[500],
-                        emphasis: colors.blue[700],
+                        faint: colors.emerald[50],
+                        muted: colors.emerald[200],
+                        DEFAULT: colors.emerald[500],
+                        emphasis: colors.emerald[700],
                         inverted: colors.white,
                     },
                     background: {

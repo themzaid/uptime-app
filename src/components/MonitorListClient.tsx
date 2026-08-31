@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { updateMonitorOrder } from '../actions/monitors';
+import { createPortal } from 'react-dom';
+import { updateMonitorOrder, updateMonitor } from '../actions/monitors';
 import DeleteMonitorButton from './DeleteMonitorButton';
 import MonitorChart from './MonitorChart';
-import { ChartLineUp, WarningCircle, CheckCircle, DotsSixVertical } from '@phosphor-icons/react';
+import { ChartLineUp, WarningCircle, CheckCircle, DotsSixVertical, PencilSimple } from '@phosphor-icons/react';
 import {
     DndContext,
     closestCenter,
@@ -59,7 +60,69 @@ function formatTimeAgo(dateInput: string | Date | null): string {
     }
 }
 
+function EditMonitorModal({ monitor, onClose }: { monitor: any, onClose: () => void }) {
+    const [name, setName] = useState(monitor.name);
+    const [url, setUrl] = useState(monitor.url);
+    const [interval, setInterval] = useState(monitor.interval);
+    const [saving, setSaving] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            await updateMonitor(monitor.id, { name, url, interval });
+            onClose();
+        } catch (e) {
+            console.error(e);
+        }
+        setSaving(false);
+    };
+
+    if (!mounted) return null;
+
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden relative" onPointerDown={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center p-5 border-b border-gray-100 bg-white">
+                    <h2 className="text-lg font-semibold text-gray-900">Edit Monitor</h2>
+                    <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                
+                <div className="p-5 flex flex-col gap-4 text-left">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 text-sm" value={name} onChange={e => setName(e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                        <input className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 text-sm" value={url} onChange={e => setUrl(e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Check Interval (Minutes)</label>
+                        <input type="number" min="1" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 text-sm" value={interval} onChange={e => setInterval(parseInt(e.target.value) || 1)} />
+                    </div>
+                </div>
+
+                <div className="p-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-colors shadow-sm text-sm">Cancel</button>
+                    <button type="button" onClick={handleSave} disabled={saving} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors shadow-sm text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
+            </div>
+        </div>,
+        document.body
+    );
+}
+
 function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) {
+    const [isEditing, setIsEditing] = useState(false);
     const {
         attributes,
         listeners,
@@ -149,10 +212,15 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
                 <div className="text-sm text-gray-500">
                     Checks every <span className="font-medium text-gray-900">{monitor.interval}</span> min
                 </div>
-                <div onPointerDown={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-2" onPointerDown={(e) => e.stopPropagation()}>
+                    <button onClick={() => setIsEditing(true)} className="text-sm text-gray-700 hover:text-gray-900 font-medium transition-colors bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
+                        Edit
+                    </button>
                     <DeleteMonitorButton id={monitor.id} />
                 </div>
             </div>
+
+            {isEditing && <EditMonitorModal monitor={monitor} onClose={() => setIsEditing(false)} />}
         </div>
     );
 }

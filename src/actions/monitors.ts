@@ -62,6 +62,30 @@ export async function deleteMonitor(id: number) {
     revalidatePath('/dashboard');
 }
 
+// Server Action to update an existing monitor
+export async function updateMonitor(id: number, data: { name: string, url: string, interval: number }) {
+    const { userId } = await auth.protect();
+    
+    let url = data.url;
+    if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url}`;
+    }
+
+    await db.update(monitors)
+        .set({ name: data.name, url, interval: data.interval, updatedAt: new Date() })
+        .where(
+            and(
+                eq(monitors.id, id),
+                eq(monitors.userId, userId)
+            )
+        );
+
+    // Update the BullMQ job with new settings (upsert will overwrite the old interval)
+    await upsertMonitorJob(id, url, data.interval);
+
+    revalidatePath('/dashboard');
+}
+
 // Server Action to update the order of monitors
 export async function updateMonitorOrder(orderedIds: number[]) {
     const { userId } = await auth.protect();

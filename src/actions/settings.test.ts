@@ -24,11 +24,13 @@ describe('Settings CRUD Integration Tests', () => {
 
     it('returns default settings when none exist in DB', async () => {
         const settings = await getUserSettings();
-        expect(settings).toEqual({
+        expect(settings).toMatchObject({
             alertCooldown: 15,
             emailAlertsEnabled: true,
             slackAlertsEnabled: true,
+            dataRetentionDays: 30,
         });
+        expect(settings.stats).toBeDefined();
     });
 
     it('creates new settings on first update', async () => {
@@ -36,12 +38,14 @@ describe('Settings CRUD Integration Tests', () => {
             alertCooldown: 30,
             emailAlertsEnabled: false,
             slackAlertsEnabled: true,
+            dataRetentionDays: 60,
         });
 
         const saved = await db.select().from(userSettings).where(eq(userSettings.userId, 'test_user_123'));
         expect(saved.length).toBe(1);
         expect(saved[0].alertCooldown).toBe(30);
         expect(saved[0].emailAlertsEnabled).toBe(false);
+        expect(saved[0].dataRetentionDays).toBe(60);
     });
 
     it('updates existing settings', async () => {
@@ -50,6 +54,7 @@ describe('Settings CRUD Integration Tests', () => {
             alertCooldown: 30,
             emailAlertsEnabled: false,
             slackAlertsEnabled: true,
+            dataRetentionDays: 30,
         });
 
         // Second update edits
@@ -57,6 +62,7 @@ describe('Settings CRUD Integration Tests', () => {
             alertCooldown: 60,
             emailAlertsEnabled: true,
             slackAlertsEnabled: false,
+            dataRetentionDays: 90,
         });
 
         const saved = await db.select().from(userSettings).where(eq(userSettings.userId, 'test_user_123'));
@@ -64,5 +70,6 @@ describe('Settings CRUD Integration Tests', () => {
         expect(saved[0].alertCooldown).toBe(60);
         expect(saved[0].emailAlertsEnabled).toBe(true);
         expect(saved[0].slackAlertsEnabled).toBe(false);
+        expect(saved[0].dataRetentionDays).toBe(90);
     });
 });

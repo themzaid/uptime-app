@@ -5,7 +5,7 @@ import { ping } from './ping';
 import { shouldResolveIncident, shouldOpenIncident, shouldSendAlert } from './incident-logic';
 import { db } from '../db';
 import { checks, incidents, monitors, userSettings } from '../db/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, lt } from 'drizzle-orm';
 import { sendIncidentEmail, sendSlackAlert } from './alerts';
 
 const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379', {
@@ -92,6 +92,21 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
             }
         }
     }
+
+    // 3. Data Retention Cleanup
+    // Fetch the latest settings (or use a default)
+    const settingsListForCleanup = await db.select().from(userSettings).where(eq(userSettings.userId, monitor.userId)).limit(1);
+    const retentionDays = settingsListForCleanup.length > 0 ? settingsListForCleanup[0].dataRetentionDays : 30;
+
+    const retentionDate = new Date();
+    retentionDate.setDate(retentionDate.getDate() - retentionDays);
+
+    await db.delete(checks).where(
+        and(
+            eq(checks.monitorId, monitorId),
+            lt(checks.timestamp, retentionDate)
+        )
+    );
 
     return result;
 }, { connection });

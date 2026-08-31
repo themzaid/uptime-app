@@ -47,6 +47,7 @@ export const userSettings = pgTable('user_settings', {
     alertCooldown: integer('alert_cooldown').notNull().default(15), // in minutes
     emailAlertsEnabled: boolean('email_alerts_enabled').notNull().default(true),
     slackAlertsEnabled: boolean('slack_alerts_enabled').notNull().default(true),
+    dataRetentionDays: integer('data_retention_days').notNull().default(30),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
