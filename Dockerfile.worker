@@ -14,5 +14,8 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 # Copy the rest of the application code
 COPY . .
 
-# Run the worker using tsx
-CMD ["pnpm", "exec", "tsx", "src/worker/start.ts"]
+# Pre-compile the worker using esbuild to save memory
+RUN pnpm exec esbuild src/worker/start.ts --bundle --platform=node --outfile=dist/worker.js --target=node22 --packages=external
+
+# Run the vanilla Node.js output (requires much less RAM than tsx)
+CMD ["node", "dist/worker.js"]
