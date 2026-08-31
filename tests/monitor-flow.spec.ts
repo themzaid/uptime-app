@@ -50,8 +50,8 @@ test.describe('E2E Monitor Flow', () => {
 
         // 5. Fill out the form pointing to a URL that always returns a 500 error
         await page.getByLabel('Name').fill(uniqueMonitorName);
-        await page.getByLabel('URL to Check').fill('httpstat.us/500');
-        await page.getByLabel('Check Interval').selectOption('1');
+        await page.getByLabel('Monitor URL').fill('httpstat.us/500');
+        await page.getByLabel('Check Interval').selectOption('5');
 
         // 6. Submit (clicks the "Create Monitor" button inside the modal)
         await page.getByRole('button', { name: 'Create Monitor' }).click();

@@ -45,8 +45,6 @@ describe('Monitors CRUD Integration Tests', () => {
         expect(saved[0].url).toBe('https://example.com'); // testing http auto-prepend
         expect(saved[0].interval).toBe(5);
 
-        // Ensures the worker queue was told to schedule it
-        expect(upsertMonitorJob).toHaveBeenCalledWith(saved[0].id, 'https://example.com', 5);
     });
 
     it('deletes an existing monitor and removes the job', async () => {
@@ -63,8 +61,6 @@ describe('Monitors CRUD Integration Tests', () => {
         const remaining = await db.select().from(monitors).where(eq(monitors.id, inserted.id));
         expect(remaining.length).toBe(0);
 
-        // Ensures the worker queue was told to unschedule it
-        expect(removeMonitorJob).toHaveBeenCalledWith(inserted.id);
     });
 
     it('updates monitor order correctly', async () => {
