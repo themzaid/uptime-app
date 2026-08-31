@@ -120,3 +120,36 @@ monitorWorker.on('failed', (job, err) => {
 });
 
 console.log('Worker is listening for jobs...');
+
+// --- Queue Synchronization Loop ---
+// Since Vercel cannot reach the private Fly.io Redis network, the worker is responsible
+// for keeping its own queue in sync with the Postgres database.
+import { upsertMonitorJob, removeMonitorJob, monitorQueue } from './queue';
+
+async function syncQueue() {
+    try {
+        const allMonitors = await db.select().from(monitors);
+        const monitorMap = new Map(allMonitors.map(m => [m.id, m]));
+        
+        // 1. Add or update all active monitors in the queue
+        for (const m of allMonitors) {
+            await upsertMonitorJob(m.id, m.url, m.interval);
+        }
+
+        // 2. Remove jobs for monitors that were deleted from the database
+        const jobs = await monitorQueue.getJobSchedulers();
+        for (const job of jobs) {
+            const idStr = job.id.replace('monitor-', '');
+            if (!monitorMap.has(Number(idStr))) {
+                await removeMonitorJob(Number(idStr));
+                console.log(`🗑️ Removed deleted monitor ${idStr} from queue`);
+            }
+        }
+    } catch (err) {
+        console.error('Error syncing queue:', err);
+    }
+}
+
+// Run immediately on boot, then every 60 seconds
+syncQueue();
+setInterval(syncQueue, 60000);

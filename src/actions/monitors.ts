@@ -6,7 +6,6 @@ import { monitors } from '../db/schema';
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { eq, and } from 'drizzle-orm';
-import { upsertMonitorJob, removeMonitorJob } from '../worker/queue';
 
 // Server Action to create a new monitor
 export async function createMonitor(formData: FormData) {
@@ -35,10 +34,7 @@ export async function createMonitor(formData: FormData) {
         interval,
     }).returning();
 
-    // 4. Schedule the job in BullMQ
-    await upsertMonitorJob(newMonitor.id, url, interval);
-
-    // 5. Tell Next.js to refresh the dashboard data
+    // 4. Tell Next.js to refresh the dashboard data
     revalidatePath('/dashboard');
 }
 
@@ -55,10 +51,7 @@ export async function deleteMonitor(id: number) {
         )
     );
 
-    // 3. Remove the job from the BullMQ schedule
-    await removeMonitorJob(id);
-
-    // 4. Tell Next.js to refresh the dashboard data
+    // 3. Tell Next.js to refresh the dashboard data
     revalidatePath('/dashboard');
 }
 
@@ -79,9 +72,6 @@ export async function updateMonitor(id: number, data: { name: string, url: strin
                 eq(monitors.userId, userId)
             )
         );
-
-    // Update the BullMQ job with new settings (upsert will overwrite the old interval)
-    await upsertMonitorJob(id, url, data.interval);
 
     revalidatePath('/dashboard');
 }
