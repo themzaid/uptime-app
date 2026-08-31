@@ -57,15 +57,15 @@ export default function SettingsPage() {
                 <Text className="mb-6">
                     Estimates based on your current monitors. Keep checks below 1,000/day to stay within the free Upstash Redis limit. Neon Postgres allows up to 500MB of storage.
                 </Text>
-                
+
                 <Grid numItemsSm={1} numItemsLg={2} className="gap-6">
                     {/* Redis Limitations */}
                     <Col>
                         <Text>Daily Redis Operations (Max ~1,000)</Text>
                         <Metric>{stats.checksPerDay} <span className="text-sm text-gray-500 font-normal">checks/day</span></Metric>
                         <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
-                            <div 
-                                className={`h-2.5 rounded-full transition-all duration-500 ${isDevelopment ? 'bg-emerald-500' : (stats.checksPerDay > 800 ? 'bg-red-500' : 'bg-emerald-500')}`} 
+                            <div
+                                className={`h-2.5 rounded-full transition-all duration-500 ${isDevelopment ? 'bg-emerald-500' : (stats.checksPerDay > 800 ? 'bg-red-500' : 'bg-emerald-500')}`}
                                 style={{ width: `${Math.min((stats.checksPerDay / 1000) * 100, 100)}%` }}
                             ></div>
                         </div>
@@ -80,8 +80,8 @@ export default function SettingsPage() {
                         <Text>Database Storage Estimate</Text>
                         <Metric>~{(stats.checksPerDay * dataRetentionDays).toLocaleString()} <span className="text-sm text-gray-500 font-normal">rows retained</span></Metric>
                         <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
-                            <div 
-                                className="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" 
+                            <div
+                                className="bg-emerald-500 h-2.5 rounded-full transition-all duration-500"
                                 style={{ width: `${Math.min(((stats.checksPerDay * dataRetentionDays) / 5000000) * 100, 100)}%` }}
                             ></div>
                         </div>
@@ -93,8 +93,8 @@ export default function SettingsPage() {
                         <Text>Daily Email Alerts (Max 100)</Text>
                         <Metric>~{(stats.checksPerDay / 100).toFixed(0)} <span className="text-sm text-gray-500 font-normal">emails/day (est.)</span></Metric>
                         <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
-                            <div 
-                                className="bg-blue-500 h-2.5 rounded-full transition-all duration-500" 
+                            <div
+                                className="bg-blue-500 h-2.5 rounded-full transition-all duration-500"
                                 style={{ width: `${Math.min((((stats.checksPerDay / 100) / 100) * 100), 100)}%` }}
                             ></div>
                         </div>
@@ -106,8 +106,8 @@ export default function SettingsPage() {
                         <Text>Worker Memory Allocation</Text>
                         <Metric>256 <span className="text-sm text-gray-500 font-normal">MB</span></Metric>
                         <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
-                            <div 
-                                className="bg-purple-500 h-2.5 rounded-full transition-all duration-500" 
+                            <div
+                                className="bg-purple-500 h-2.5 rounded-full transition-all duration-500"
                                 style={{ width: '100%' }}
                             ></div>
                         </div>
@@ -166,14 +166,12 @@ export default function SettingsPage() {
                         role="switch"
                         aria-checked={emailEnabled}
                         onClick={() => setEmailEnabled(!emailEnabled)}
-                        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center justify-start rounded-full border-2 border-transparent p-0 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${
-                            emailEnabled ? 'bg-emerald-500' : 'bg-gray-200'
-                        }`}
+                        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center justify-start rounded-full border-2 border-transparent p-0 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${emailEnabled ? 'bg-emerald-500' : 'bg-gray-200'
+                            }`}
                     >
                         <span
-                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                                emailEnabled ? 'translate-x-5' : 'translate-x-0'
-                            }`}
+                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${emailEnabled ? 'translate-x-5' : 'translate-x-0'
+                                }`}
                         />
                     </button>
                 </div>
@@ -188,14 +186,12 @@ export default function SettingsPage() {
                         role="switch"
                         aria-checked={slackEnabled}
                         onClick={() => setSlackEnabled(!slackEnabled)}
-                        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center justify-start rounded-full border-2 border-transparent p-0 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${
-                            slackEnabled ? 'bg-emerald-500' : 'bg-gray-200'
-                        }`}
+                        className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center justify-start rounded-full border-2 border-transparent p-0 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${slackEnabled ? 'bg-emerald-500' : 'bg-gray-200'
+                            }`}
                     >
                         <span
-                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                                slackEnabled ? 'translate-x-5' : 'translate-x-0'
-                            }`}
+                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${slackEnabled ? 'translate-x-5' : 'translate-x-0'
+                                }`}
                         />
                     </button>
                 </div>

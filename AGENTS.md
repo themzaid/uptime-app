@@ -23,7 +23,7 @@ When asked to generate a git commit message, ALWAYS use the following exact form
 
 ```bash
 git add .
-git commit -m "type: [Task Name] description"
+git commit -m "type: [Task Name] description
 - First change
 - Second change
 - Third change"
@@ -56,3 +56,14 @@ git push
 - BACKLOG RULE: You are allowed to edit `uptime-monitor-backlog.md` to check off completed tasks, BUT ONLY do so when the user explicitly asks for a commit message or confirms the task is completely finished. Never check it off prematurely.
 - NEVER run any commands yourself (e.g., via terminal/shell tools). Only tell the user what commands to run so they can execute them manually.
 - ALWAYS provide a git commit message block when the current task or step is finished.
+
+# Next 16, Tailwind v4 & Vercel Deployment Rules
+1. **Next 16 Middleware:** The `middleware.ts` convention is deprecated. ALWAYS use `proxy.ts` instead of `middleware.ts`.
+2. **Tailwind v4 Configuration:** `tailwind.config.ts` is mostly deprecated in v4, but if you need it (e.g. for Tremor safelisting), you MUST type the config as `any` (i.e. `const config: any = { ... }`). The official Tailwind `Config` type is missing v3 properties like `safelist` and will fail the Next.js production build typechecker.
+3. **pnpm 10+ on Vercel:** pnpm versions 10+ and 11+ are extremely strict about lockfiles and post-install scripts. This will cause Vercel to fail with `ERR_PNPM_IGNORED_BUILDS` if packages like `esbuild` try to run.
+   - You MUST add `"pnpm": { "onlyBuiltDependencies": ["esbuild"] }` to `package.json`.
+   - The user MUST manually override the Vercel Install Command in their dashboard settings to: `pnpm install --ignore-scripts` to bypass lockfile strictness in CI.
+
+# Database & Environment Rules
+1. **Schema Updates:** If you modify `src/db/schema.ts`, you MUST remind the user to run `pnpm db:push` against their **live production database**, not just their local docker database. Failure to sync the live DB will crash Vercel in production.
+2. **Environment Variable Shadowing:** Do NOT define the same environment variable twice in `.env.local` (e.g., a local `DATABASE_URL` overriding a production `DATABASE_URL`). Variables lower in the file will silently overwrite the ones above them, causing deployments or local scripts to connect to the wrong database.
