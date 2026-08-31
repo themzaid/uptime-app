@@ -131,9 +131,14 @@ async function syncQueue() {
         const allMonitors = await db.select().from(monitors);
         const monitorMap = new Map(allMonitors.map(m => [m.id, m]));
         
+        const jobs = await monitorQueue.getJobSchedulers();
+        const existingJobIds = new Set(jobs.map(j => j.id));
+        
         // 1. Add or update all active monitors in the queue
         for (const m of allMonitors) {
-            await upsertMonitorJob(m.id, m.url, m.interval);
+            const schedulerId = `monitor-${m.id}`;
+            const isNew = !existingJobIds.has(schedulerId);
+            await upsertMonitorJob(m.id, m.url, m.interval, isNew);
         }
 
         // 2. Remove jobs for monitors that were deleted from the database

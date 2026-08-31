@@ -8,7 +8,7 @@ const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379'
 
 export const monitorQueue = new Queue('monitor-queue', { connection });
 
-export async function upsertMonitorJob(monitorId: number, url: string, intervalMinutes: number) {
+export async function upsertMonitorJob(monitorId: number, url: string, intervalMinutes: number, isNew: boolean = false) {
     const schedulerId = `monitor-${monitorId}`;
 
     function getCron(minutes: number) {
@@ -24,7 +24,7 @@ export async function upsertMonitorJob(monitorId: number, url: string, intervalM
         schedulerId,
         {
             pattern: getCron(intervalMinutes),
-            immediately: true,
+            immediately: isNew,
         },
         {
             name: 'check-monitor',

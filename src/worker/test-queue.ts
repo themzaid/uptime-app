@@ -1,15 +1,12 @@
-// src/worker/test-queue.ts
-import { config } from 'dotenv';
-config({ path: '.env.local' });
-
-import { upsertMonitorJob } from './queue';
-
+import { Queue } from 'bullmq';
+import IORedis from 'ioredis';
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.production' });
+const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379', { maxRetriesPerRequest: null });
+const monitorQueue = new Queue('monitor-queue', { connection });
 async function run() {
-    console.log('Adding test monitor to queue...');
-    // We'll schedule a check for google.com every 1 minute
-    await upsertMonitorJob(999, 'https://google.com', 1);
-    console.log('Job added!');
+    const jobs = await monitorQueue.getJobSchedulers();
+    console.log(JSON.stringify(jobs, null, 2));
     process.exit(0);
 }
-
-run().catch(console.error);
+run();
