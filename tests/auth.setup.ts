@@ -2,9 +2,9 @@
  * Global authentication setup.
  * Runs once before the test suite to authenticate and save session state.
  */
-import { test as setup, expect } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import path from 'path';
-import { setupClerkTestingToken, clerkSetup } from '@clerk/testing/playwright';
+import { clerkSetup } from '@clerk/testing/playwright';
 
 const authFile = path.join(__dirname, '../playwright/.auth/user.json');
 

@@ -36,6 +36,7 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
     // the 10:02 ping yet, the right-most buckets will artificially show as gray ("No Data").
     const latestCheckTime = checks.length > 0 
         ? Math.max(...checks.map(c => new Date(c.timestamp).getTime())) 
+        // eslint-disable-next-line react-hooks/purity
         : Date.now();
     
     // Add 1 second to ensure the latest check falls *inside* the bucket boundary (< bucketEnd)
@@ -124,6 +125,7 @@ export default function MonitorChart({ checks, view = 'daily' }: { checks: Check
         };
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const CustomTooltip = ({ payload, active }: any) => {
         if (!active || !payload || payload.length === 0) return null;
         return (

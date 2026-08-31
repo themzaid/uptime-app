@@ -46,13 +46,13 @@ export async function ping(url: string, timeoutMs: number = 10000, maxRetries: n
                     latency,
                 };
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             const latency = Date.now() - start;
             clearTimeout(timeoutId);
 
             // If we've exhausted all retries on network failures or timeouts, return the failure
             if (attempt >= maxRetries) {
-                if (error.name === 'AbortError') {
+                if (error instanceof Error && error.name === 'AbortError') {
                     return {
                         isUp: false,
                         status: 408, // Request Timeout

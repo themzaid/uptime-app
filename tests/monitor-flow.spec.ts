@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { test, expect } from '@playwright/test';
 import { setupClerkTestingToken, clerkSetup } from '@clerk/testing/playwright';
 

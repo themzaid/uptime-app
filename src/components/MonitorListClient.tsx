@@ -60,7 +60,7 @@ function formatTimeAgo(dateInput: string | Date | null): string {
     }
 }
 
-function EditMonitorModal({ monitor, onClose }: { monitor: any, onClose: () => void }) {
+function EditMonitorModal({ monitor, onClose }: { monitor: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, onClose: () => void }) {
     const [name, setName] = useState(monitor.name);
     const [url, setUrl] = useState(monitor.url);
     const [interval, setInterval] = useState(monitor.interval);
@@ -68,6 +68,7 @@ function EditMonitorModal({ monitor, onClose }: { monitor: any, onClose: () => v
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 
@@ -121,7 +122,7 @@ function EditMonitorModal({ monitor, onClose }: { monitor: any, onClose: () => v
     );
 }
 
-function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) {
+function SortableMonitorCard({ monitor, view }: { monitor: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, view: string }) {
     const [isEditing, setIsEditing] = useState(false);
     const {
         attributes,
@@ -141,10 +142,12 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
     const hasChecks = monitor.checks.length > 0;
     const isDown = monitor.incidents.length > 0 || (hasChecks && (monitor.checks[0].statusCode === null || monitor.checks[0].statusCode! < 200 || monitor.checks[0].statusCode! >= 300));
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const upChecks = monitor.checks.filter((c: any) => c.statusCode && c.statusCode >= 200 && c.statusCode < 300).length;
     const uptimePct = hasChecks ? Math.round((upChecks / monitor.checks.length) * 100) : 100;
     const latestLatency = hasChecks ? monitor.checks[0].latency : null;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const latencies = monitor.checks.map((c: any) => c.latency).filter((l: any): l is number => l !== null);
     const medianLatency = latencies.length > 0 ? getMedian(latencies) : null;
 
@@ -225,10 +228,12 @@ function SortableMonitorCard({ monitor, view }: { monitor: any, view: string }) 
     );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function MonitorListClient({ initialMonitors, view }: { initialMonitors: any[], view: string }) {
     const [monitors, setMonitors] = useState(initialMonitors);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMonitors(initialMonitors);
     }, [initialMonitors]);
 
@@ -264,7 +269,7 @@ export default function MonitorListClient({ initialMonitors, view }: { initialMo
     if (monitors.length === 0) {
         return (
             <p className="text-gray-500 bg-gray-50 p-6 rounded-xl border border-gray-100 text-center">
-                You don't have any monitors yet. Add one above!
+                You don&apos;t have any monitors yet. Add one above!
             </p>
         );
     }

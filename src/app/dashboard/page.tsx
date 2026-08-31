@@ -21,6 +21,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ vie
 
     // Determine time range cutoff based on the selector
     const timeRangeMs = view === 'hourly' ? 60 * 60 * 1000 : view === 'weekly' ? 7 * 24 * 60 * 60 * 1000 : view === 'monthly' ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+    // eslint-disable-next-line react-hooks/purity
     const fromDate = new Date(Date.now() - timeRangeMs);
 
     // Fetch monitors with their current open incident and checks within the chosen timeframe!
