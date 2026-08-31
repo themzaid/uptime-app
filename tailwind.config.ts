@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss';
 import colors from 'tailwindcss/colors';
 
-const config: Config = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const config: any = {
     content: [
         './src/**/*.{js,ts,jsx,tsx,mdx}',
         './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
