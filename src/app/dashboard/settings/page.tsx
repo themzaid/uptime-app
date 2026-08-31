@@ -59,6 +59,7 @@ export default function SettingsPage() {
                 </Text>
                 
                 <Grid numItemsSm={1} numItemsLg={2} className="gap-6">
+                    {/* Redis Limitations */}
                     <Col>
                         <Text>Daily Redis Operations (Max ~1,000)</Text>
                         <Metric>{stats.checksPerDay} <span className="text-sm text-gray-500 font-normal">checks/day</span></Metric>
@@ -85,6 +86,32 @@ export default function SettingsPage() {
                             ></div>
                         </div>
                         <Text className="mt-2 text-xs text-gray-500">500MB limit allows roughly 5 million rows.</Text>
+                    </Col>
+
+                    {/* Resend Email Limitations */}
+                    <Col>
+                        <Text>Daily Email Alerts (Max 100)</Text>
+                        <Metric>~{(stats.checksPerDay / 100).toFixed(0)} <span className="text-sm text-gray-500 font-normal">emails/day (est.)</span></Metric>
+                        <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
+                            <div 
+                                className="bg-blue-500 h-2.5 rounded-full transition-all duration-500" 
+                                style={{ width: `${Math.min((((stats.checksPerDay / 100) / 100) * 100), 100)}%` }}
+                            ></div>
+                        </div>
+                        <Text className="mt-2 text-xs text-gray-500">Resend free tier allows 100 emails per day.</Text>
+                    </Col>
+
+                    {/* Fly.io Worker Limitations */}
+                    <Col>
+                        <Text>Worker Memory Allocation</Text>
+                        <Metric>256 <span className="text-sm text-gray-500 font-normal">MB</span></Metric>
+                        <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
+                            <div 
+                                className="bg-purple-500 h-2.5 rounded-full transition-all duration-500" 
+                                style={{ width: '100%' }}
+                            ></div>
+                        </div>
+                        <Text className="mt-2 text-xs text-gray-500">Fly.io free tier allows up to 256MB RAM per VM.</Text>
                     </Col>
                 </Grid>
             </Card>
