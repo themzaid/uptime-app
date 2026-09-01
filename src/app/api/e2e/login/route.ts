@@ -2,8 +2,11 @@ import { clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-    // SECURITY: Ensure this backdoor ONLY runs in local development!
-    if (process.env.NODE_ENV !== 'development') {
+    // SECURITY: Ensure this backdoor ONLY runs in local development or Vercel Preview (staging)!
+    const isLocal = process.env.NODE_ENV === 'development';
+    const isStaging = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
+    
+    if (!isLocal && !isStaging) {
         return new NextResponse('Not found', { status: 404 });
     }
     
