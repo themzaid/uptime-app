@@ -13,6 +13,44 @@ A full-stack, production-ready Next.js application that monitors your websites v
 - **Emails & Alerts:** Resend (Email), Slack Webhooks
 - **Package Manager:** pnpm
 
+## Architecture
+
+```mermaid
+graph TD
+    subgraph Frontend [Next.js App - Vercel]
+        UI[Dashboard UI]
+        API[API Routes]
+        UI --> API
+    end
+
+    subgraph Background [Worker Container - Fly.io/Railway]
+        Worker[Node.js BullMQ Worker]
+    end
+
+    subgraph Infrastructure [Data Layer]
+        DB[(Neon Serverless Postgres)]
+        Redis[(Redis Cache / Queue)]
+    end
+
+    subgraph External [External Services]
+        Clerk[Clerk Auth]
+        Slack[Slack Webhook]
+        Resend[Resend Email]
+        Target[Monitored Websites]
+    end
+
+    %% Interactions
+    UI -->|Authenticates| Clerk
+    API -->|Reads/Writes| DB
+    API -->|Enqueues Jobs| Redis
+    
+    Worker -->|Consumes Jobs| Redis
+    Worker -->|HTTP Pings| Target
+    Worker -->|Records Results| DB
+    Worker -->|Alerts| Slack
+    Worker -->|Alerts| Resend
+```
+
 ## Local Development Setup
 
 Follow these steps to get the full stack running locally.
