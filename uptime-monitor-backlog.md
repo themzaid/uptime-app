@@ -266,7 +266,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 3
 
 ### 3. Provision production environment + secrets
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** infra, devops
 - **Priority:** Medium
 - **Estimate:** 3
