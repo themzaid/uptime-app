@@ -52,7 +52,7 @@ export default function SettingsPage() {
                 <p className="text-gray-500">Manage your alert preferences, data retention, and view limits.</p>
             </div>
 
-            <Card>
+            <Card className="rounded-2xl">
                 <Title>Free Tier Usage Limits</Title>
                 <Text className="mb-6">
                     Estimates based on your current monitors. Keep checks below 1,000/day to stay within the free Upstash Redis limit. Neon Postgres allows up to 500MB of storage.
@@ -63,9 +63,9 @@ export default function SettingsPage() {
                     <Col>
                         <Text>Daily Redis Operations (Max ~1,000)</Text>
                         <Metric>{stats.checksPerDay} <span className="text-sm text-gray-500 font-normal">checks/day</span></Metric>
-                        <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
+                        <div className="w-11/12 bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
                             <div
-                                className={`h-2.5 rounded-full transition-all duration-500 ${isDevelopment ? 'bg-emerald-500' : (stats.checksPerDay > 800 ? 'bg-red-500' : 'bg-emerald-500')}`}
+                                className={`h-2.5 rounded-full transition-all duration-500 bg-gradient-to-r ${isDevelopment ? 'from-emerald-400 to-emerald-600' : (stats.checksPerDay > 800 ? 'from-orange-400 to-red-600' : 'from-emerald-400 to-emerald-600')}`}
                                 style={{ width: `${Math.min((stats.checksPerDay / 1000) * 100, 100)}%` }}
                             ></div>
                         </div>
@@ -79,9 +79,9 @@ export default function SettingsPage() {
                     <Col>
                         <Text>Database Storage Estimate</Text>
                         <Metric>~{(stats.checksPerDay * dataRetentionDays).toLocaleString()} <span className="text-sm text-gray-500 font-normal">rows retained</span></Metric>
-                        <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
+                        <div className="w-11/12 bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
                             <div
-                                className="bg-emerald-500 h-2.5 rounded-full transition-all duration-500"
+                                className="h-2.5 rounded-full transition-all duration-500 bg-gradient-to-r from-emerald-400 to-emerald-600"
                                 style={{ width: `${Math.min(((stats.checksPerDay * dataRetentionDays) / 5000000) * 100, 100)}%` }}
                             ></div>
                         </div>
@@ -92,9 +92,9 @@ export default function SettingsPage() {
                     <Col>
                         <Text>Daily Email Alerts (Max 100)</Text>
                         <Metric>~{(stats.checksPerDay / 100).toFixed(0)} <span className="text-sm text-gray-500 font-normal">emails/day (est.)</span></Metric>
-                        <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
+                        <div className="w-11/12 bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
                             <div
-                                className="bg-blue-500 h-2.5 rounded-full transition-all duration-500"
+                                className="h-2.5 rounded-full transition-all duration-500 bg-gradient-to-r from-blue-400 to-blue-600"
                                 style={{ width: `${Math.min((((stats.checksPerDay / 100) / 100) * 100), 100)}%` }}
                             ></div>
                         </div>
@@ -105,9 +105,9 @@ export default function SettingsPage() {
                     <Col>
                         <Text>Worker Memory Allocation</Text>
                         <Metric>256 <span className="text-sm text-gray-500 font-normal">MB</span></Metric>
-                        <div className="w-full bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
+                        <div className="w-11/12 bg-gray-100 rounded-full h-2.5 mt-3 overflow-hidden">
                             <div
-                                className="bg-purple-500 h-2.5 rounded-full transition-all duration-500"
+                                className="h-2.5 rounded-full transition-all duration-500 bg-gradient-to-r from-purple-400 to-purple-600"
                                 style={{ width: '100%' }}
                             ></div>
                         </div>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
                 </Grid>
             </Card>
 
-            <Card>
+            <Card className="rounded-2xl">
                 <Title>Data Retention</Title>
                 <Text className="mb-4">
                     Automatically delete old ping results to save database storage space. The worker will clean up old records during each check.
@@ -134,7 +134,7 @@ export default function SettingsPage() {
                 </div>
             </Card>
 
-            <Card>
+            <Card className="rounded-2xl">
                 <Title>Alert Throttling</Title>
                 <Text className="mb-4">
                     Set a cooldown period (in minutes) to prevent getting spammed when a monitor is rapidly flapping up and down. Industry standard is 15-30 minutes.
@@ -152,11 +152,11 @@ export default function SettingsPage() {
                 </div>
             </Card>
 
-            <Card>
+            <Card className="rounded-2xl">
                 <Title>Notification Channels</Title>
                 <Text className="mb-6">Choose how you want to receive alerts when incidents occur.</Text>
 
-                <div className="flex items-center justify-between mb-4 p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-6">
                     <div>
                         <p className="font-semibold text-gray-900">Email Alerts</p>
                         <p className="text-sm text-gray-500">Receive an email when a monitor goes down or recovers.</p>
@@ -170,13 +170,13 @@ export default function SettingsPage() {
                             }`}
                     >
                         <span
-                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${emailEnabled ? 'translate-x-5' : 'translate-x-0'
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${emailEnabled ? 'translate-x-5.5' : 'translate-x-0.5'
                                 }`}
                         />
                     </button>
                 </div>
 
-                <div className="flex items-center justify-between p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div className="flex items-center justify-between mb-2">
                     <div>
                         <p className="font-semibold text-gray-900">Slack Alerts</p>
                         <p className="text-sm text-gray-500">Send webhook notifications to Slack.</p>
@@ -190,7 +190,7 @@ export default function SettingsPage() {
                             }`}
                     >
                         <span
-                            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${slackEnabled ? 'translate-x-5' : 'translate-x-0'
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${slackEnabled ? 'translate-x-5.5' : 'translate-x-0.5'
                                 }`}
                         />
                     </button>

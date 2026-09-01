@@ -55,7 +55,7 @@ git push
 - You MAY automatically edit files that are already present and have code in them. For all other code changes (like creating new files), provide the code for the user to copy/paste.
 - BACKLOG RULE: You are allowed to edit `uptime-monitor-backlog.md` to check off completed tasks, BUT ONLY do so when the user explicitly asks for a commit message or confirms the task is completely finished. Never check it off prematurely.
 - NEVER run any commands yourself (e.g., via terminal/shell tools). Only tell the user what commands to run so they can execute them manually.
-- ALWAYS provide a git commit message block when the current task or step is finished.
+- ONLY provide a git commit message block when a comprehensive task is fully completed or when explicitly asked. DO NOT provide commit messages for minor steps, single file edits, or intermediate chat replies.
 - DO NOT try to delete any locked or currently running file. Never use a force-delete command on locked files. Stop and ask for confirmation instead.
 
 # Next 16, Tailwind v4 & Vercel Deployment Rules

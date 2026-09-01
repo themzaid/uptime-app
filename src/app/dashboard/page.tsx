@@ -46,11 +46,31 @@ export default async function DashboardPage(props: { searchParams: Promise<{ vie
             <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Your Monitors</h1>
                 <div className="flex items-center gap-4">
-                    <div className="flex bg-gray-100 p-1 rounded-lg overflow-x-auto">
-                        <Link href="?view=hourly" className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${view === 'hourly' ? 'bg-white shadow-sm text-green-700' : 'text-gray-500 hover:text-gray-900'}`}>Hourly</Link>
-                        <Link href="?view=daily" className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${view === 'daily' ? 'bg-white shadow-sm text-green-700' : 'text-gray-500 hover:text-gray-900'}`}>Daily</Link>
-                        <Link href="?view=weekly" className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${view === 'weekly' ? 'bg-white shadow-sm text-green-700' : 'text-gray-500 hover:text-gray-900'}`}>Weekly</Link>
-                        <Link href="?view=monthly" className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${view === 'monthly' ? 'bg-white shadow-sm text-green-700' : 'text-gray-500 hover:text-gray-900'}`}>Monthly</Link>
+                    <div className="relative flex bg-gray-100 p-1 rounded-xl">
+                        {/* Sliding Background */}
+                        <div 
+                            className="absolute top-1 left-1 bottom-1 w-[88px] bg-emerald-600 shadow-md rounded-lg transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] z-0"
+                            style={{ 
+                                transform: `translateX(${['hourly', 'daily', 'weekly', 'monthly'].indexOf(view) * 88}px)` 
+                            }}
+                        />
+                        
+                        {[
+                            { id: 'hourly', label: 'Hourly' },
+                            { id: 'daily', label: 'Daily' },
+                            { id: 'weekly', label: 'Weekly' },
+                            { id: 'monthly', label: 'Monthly' },
+                        ].map((v) => (
+                            <Link 
+                                key={v.id}
+                                href={`?view=${v.id}`} 
+                                className={`relative z-10 flex items-center justify-center w-[88px] py-1.5 text-sm font-medium rounded-lg transition-colors active:scale-95 active:translate-y-[1px] ${
+                                    view === v.id ? 'text-white' : 'text-gray-500 hover:text-emerald-700'
+                                }`}
+                            >
+                                {v.label}
+                            </Link>
+                        ))}
                     </div>
                     <AddMonitorForm />
                 </div>

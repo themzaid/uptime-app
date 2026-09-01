@@ -226,7 +226,7 @@ export default function MonitorChart({
         <div className="mt-8 flex flex-col gap-8">
             {/* Uptime Tracker */}
             <div>
-                <p className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider flex items-center justify-between">
+                <div className="text-xs text-gray-400 font-medium mb-3 uppercase tracking-wider flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
                         Uptime History
                         {/* Info icon — hover to see color legend */}
@@ -261,7 +261,7 @@ export default function MonitorChart({
                         </span>
                     </span>
                     <span className="text-gray-400 normal-case tracking-normal">{chartDescription}</span>
-                </p>
+                </div>
                 <div className={`flex items-center ${gapClass} h-8 w-full relative`}>
                     {trackerData.map(block => (
                         <div

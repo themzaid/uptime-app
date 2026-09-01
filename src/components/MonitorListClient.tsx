@@ -94,7 +94,7 @@ function EditMonitorModal({ monitor, onClose }: { monitor: any /* eslint-disable
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
-                
+
                 <div className="p-5 flex flex-col gap-4 text-left">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
