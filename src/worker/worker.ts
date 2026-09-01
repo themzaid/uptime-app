@@ -109,7 +109,10 @@ export const monitorWorker = new Worker('monitor-queue', async (job) => {
     );
 
     return result;
-}, { connection });
+}, { 
+    connection,
+    prefix: process.env.BULLMQ_PREFIX || 'bull'
+});
 
 monitorWorker.on('completed', (job) => {
     console.log(`[Job ${job.id}] Completed successfully`);

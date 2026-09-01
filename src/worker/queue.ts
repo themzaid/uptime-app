@@ -6,7 +6,10 @@ const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379'
     maxRetriesPerRequest: null
 });
 
-export const monitorQueue = new Queue('monitor-queue', { connection });
+export const monitorQueue = new Queue('monitor-queue', { 
+    connection,
+    prefix: process.env.BULLMQ_PREFIX || 'bull'
+});
 
 export async function upsertMonitorJob(monitorId: number, url: string, intervalMinutes: number, isNew: boolean = false) {
     const schedulerId = `monitor-${monitorId}`;
