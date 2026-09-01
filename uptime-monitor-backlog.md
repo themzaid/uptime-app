@@ -278,14 +278,14 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 2
 
 ### 5. Architecture diagram
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** docs
 - **Priority:** Low
 - **Estimate:** 2
 - Excalidraw or draw.io — show Vercel, worker container, Postgres, Redis, alert flow.
 
 ### 6. README polish — why Docker, why Playwright, demo link
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** docs
 - **Priority:** Low
 - **Estimate:** 2

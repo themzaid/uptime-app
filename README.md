@@ -107,3 +107,15 @@ This repository uses GitHub Actions for continuous integration and deployment:
 - **Worker Image Publish:** Builds and publishes the Node.js worker Docker image to GitHub Container Registry (GHCR) when merged to `main`.
 - **Dashboard Deployment:** The frontend dashboard is automatically deployed to Vercel on push to `main`.
 - **Worker Deployment:** The backend polling worker is automatically deployed to Fly.io/Railway via Docker image.
+
+## Design Decisions
+
+### Why Docker for the Worker?
+Vercel and serverless architectures are incredible for frontend delivery and fast API routes, but they are not well-suited for long-running, continuous background tasks like scheduled polling. 
+By containerizing the BullMQ background worker with Docker, we decoupled the polling engine from the serverless frontend. This ensures stable, continuous background processing that doesn't suffer from serverless cold starts or timeout execution limits. Docker also guarantees parity across environments and makes it trivial to spin up the full stack (Postgres + Redis + Worker) locally for development.
+
+### Why Playwright?
+For an uptime monitor, the system's core value relies entirely on the UI accurately reflecting real-time backend state changes. If a monitor goes down, the user *must* see it. Playwright allows us to test the *actual* user journey end-to-end. Instead of just mocking functions, Playwright spins up a real browser, allowing us to verify that when the background worker detects a simulated failure, the Next.js frontend correctly re-renders to display the incident.
+
+### Usage
+This project is built for **self-hosting**. It's fully open-source and intended for developers to clone, deploy, and use for their own personal monitoring needs! See the **Local Development Setup** section above to get started.
