@@ -272,7 +272,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - **Estimate:** 3
 
 ### 4. Final QA pass — real alerts end-to-end in prod
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** test
 - **Priority:** Medium
 - **Estimate:** 2
