@@ -14,7 +14,7 @@ jobs:
     # Only run if triggered manually OR if a Vercel Preview deployment for the `dev` branch just succeeded
     if: >
       github.event_name == 'workflow_dispatch' || 
-      (github.event.deployment_status.state == 'success' && github.event.deployment.ref == 'dev')
+      (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Preview')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
