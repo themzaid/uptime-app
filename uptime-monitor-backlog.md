@@ -253,7 +253,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 **Sprint Goal:** A stable, demoable product with a real environment story.
 
 ### 1. Provision staging environment
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** infra, devops
 - **Priority:** Urgent
 - **Estimate:** 3
