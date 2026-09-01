@@ -1,53 +1,71 @@
 # Uptime Monitor
 
-[![Lint](https://github.com/your-username/uptime-app/actions/workflows/lint.yml/badge.svg)](https://github.com/your-username/uptime-app/actions/workflows/lint.yml)
-[![Test](https://github.com/your-username/uptime-app/actions/workflows/test.yml/badge.svg)](https://github.com/your-username/uptime-app/actions/workflows/test.yml)
+[![Lint](https://github.com/themzaid/uptime-app/actions/workflows/lint.yml/badge.svg)](https://github.com/themzaid/uptime-app/actions/workflows/lint.yml)
+[![Test](https://github.com/themzaid/uptime-app/actions/workflows/test.yml/badge.svg)](https://github.com/themzaid/uptime-app/actions/workflows/test.yml)
 
-A full-stack Next.js application that monitors your websites and alerts you when they go down.
+A full-stack, production-ready Next.js application that monitors your websites via ping intervals, detects incidents, and alerts you via Slack and Email when they go down.
 
 ## Tech Stack
-- **Framework:** Next.js (App Router)
-- **Package Manager:** pnpm
+- **Frontend/Framework:** Next.js 15 (App Router), Tailwind CSS v4, Tremor (Charts)
+- **Database:** Neon Serverless Postgres, Drizzle ORM
+- **Background Jobs:** BullMQ, Redis (for scheduled pings and retries)
 - **Authentication:** Clerk
-- **Styling:** Tailwind CSS
+- **Emails & Alerts:** Resend (Email), Slack Webhooks
+- **Package Manager:** pnpm
 
 ## Local Development Setup
 
-Follow these steps to get the project running locally in under 10 minutes.
+Follow these steps to get the full stack running locally.
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/themzaid/uptime-app.git
 cd uptime-app
-pnpm install
+pnpm install --ignore-scripts
 ```
 
 ### 2. Configure Environment Variables
-Copy the `.env.example` file to create your own `.env.local`:
+Copy `.env.example` to create your local environment files:
 ```bash
 cp .env.example .env.local
+cp .env.example .env.e2e
 ```
-Fill in the Clerk API keys in `.env.local` from your Clerk dashboard.
+*Note: You must fill in the Clerk API keys, Database URLs, and Slack webhook URLs inside `.env.local`.*
 
-### 3. Start the Development Server
+### 3. Start Database and Redis
+The application requires PostgreSQL and Redis. You can easily spin them up using the provided Docker Compose file:
+```bash
+docker compose up -d postgres redis
+```
+Once running, push your database schema to the local Postgres instance:
+```bash
+pnpm db:push
+```
+
+### 4. Start the Application
+You need to run both the Next.js dashboard and the background worker simultaneously:
+
+Terminal 1 (Next.js Dashboard):
 ```bash
 pnpm dev
 ```
-The application will be available at [http://localhost:4200](http://localhost:4200).
+
+Terminal 2 (BullMQ Worker):
+```bash
+pnpm run worker
+```
+The dashboard will be available at [http://localhost:3000](http://localhost:3000).
+
+## Testing
+- **Unit Tests:** `pnpm test run` (Powered by Vitest)
+- **E2E Tests:** `pnpm exec playwright test` (Requires local server and database to be running)
 
 ## CI/CD Pipeline
 
-This repository uses GitHub Actions for continuous integration and continuous deployment (CI/CD):
+This repository uses GitHub Actions for continuous integration and deployment:
 
-- **Lint and Typecheck:** Runs ESLint and TypeScript compilation checks on every Pull Request and push to `main`.
-- **Automated Tests:** Runs the full Vitest and Playwright test suite against a live, Docker-containerized test database on every Pull Request.
-- **Worker Image Publish:** Builds and publishes a new Docker image for the worker node to GitHub Container Registry (GHCR) when changes are merged to `main`.
-- **Fly.io Deployment:** Automatically deploys the worker container to Fly.io on push to `main`.
-
-### Dashboard Deployment (Vercel)
-The Next.js dashboard application is built to be deployed on Vercel. 
-To set up continuous deployment for the frontend:
-1. Push this repository to GitHub.
-2. Import the project into your Vercel account.
-3. Configure the environment variables from your `.env.local` inside the Vercel dashboard.
-4. Any pushes to `main` will automatically trigger a production build.
+- **Lint and Typecheck:** Runs ESLint and TypeScript checks on PRs and pushes to `main`.
+- **Automated Tests:** Runs Vitest and Playwright tests against an ephemeral Dockerized database environment on every PR.
+- **Worker Image Publish:** Builds and publishes the Node.js worker Docker image to GitHub Container Registry (GHCR) when merged to `main`.
+- **Dashboard Deployment:** The frontend dashboard is automatically deployed to Vercel on push to `main`.
+- **Worker Deployment:** The backend polling worker is automatically deployed to Fly.io/Railway via Docker image.
