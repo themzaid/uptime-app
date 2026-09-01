@@ -1,0 +1,51 @@
+name: Smoke Test Staging
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      staging_url:
+        description: 'Staging URL to test against'
+        required: false
+        default: 'https://uptime-app-git-dev-mohammedzaid03-4339s-projects.vercel.app'
+
+jobs:
+  smoke-test:
+    # Only run if triggered manually OR if a Vercel Preview deployment for the `dev` branch just succeeded
+    if: >
+      github.event_name == 'workflow_dispatch' || 
+      (github.event.deployment_status.state == 'success' && github.event.deployment.ref == 'dev')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run Playwright Tests
+        run: pnpm exec playwright test
+        env:
+          # Automatically use the exact URL Vercel just finished deploying to, fallback to manual input
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url || github.event.inputs.staging_url }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}

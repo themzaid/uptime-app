@@ -260,7 +260,7 @@ This mirrors the current state of the "Uptime Monitor" project in Linear (team: 
 - Separate Fly.io app + Neon staging branch.
 
 ### 2. Run Playwright smoke suite against staging before promotion
-- **Status:** ⬜ Not started
+- **Status:** ✅ Done
 - **Labels:** test, devops
 - **Priority:** High
 - **Estimate:** 3
